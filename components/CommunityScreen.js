@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-export default function ProfileScreen() {
+export default function CommunityScreen() {
   return (
     <View>
-      <Text>Profiili</Text>
+      <Text>Yhteisö</Text>
     </View>
   );
 }
