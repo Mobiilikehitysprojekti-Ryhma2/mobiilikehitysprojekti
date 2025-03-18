@@ -1,2 +1,0 @@
-# mobiilikehitysprojekti
-# testailen vielä lisää
