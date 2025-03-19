@@ -1,8 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Colors } from "../theme/colors";
+import { useFonts, Exo_600SemiBold } from "@expo-google-fonts/exo";
 
 const WelcomeScreen = ({ navigation }) => {
+  let [fontsLoaded, fontError] = useFonts({ Exo_600SemiBold });
+
+  if (!fontsLoaded && fontError) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Image
@@ -51,24 +58,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 50,
-    marginBottom: 20,
+    fontSize: 40,
+    marginBottom: 50,
+    width: "70%",
     color: "white",
     textAlign: "center",
-    fontFamily: "Exo",
+    fontFamily: "Exo_600SemiBold",
   },
   button: {
     width: 190,
-    backgroundColor: "#fff",
-    paddingVertical: 10,
+    backgroundColor: Colors.onPrimary,
+    paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 0,
     marginBottom: 15,
   },
   buttonText: {
-    color: "black",
+    color: Colors.onPrimaryContainer,
     fontSize: 16,
     textAlign: "center",
   },
