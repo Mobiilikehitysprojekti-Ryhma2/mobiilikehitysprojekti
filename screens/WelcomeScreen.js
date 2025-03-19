@@ -10,7 +10,8 @@ const WelcomeScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
       <Text style={styles.buttonText}>Rekisteröidy</Text>
-      </TouchableOpacity>     
+      </TouchableOpacity>
+
     </View>
   );
 };
