@@ -12,6 +12,7 @@ const WelcomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
       <Image
         source={require("../assets/background.jpg")}
         style={styles.image}
@@ -32,6 +33,16 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Rekisteröidy</Text>
         </TouchableOpacity>
       </View>
+=======
+      <Text style={styles.text}>Tervetuloa Appiin</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')} >
+      <Text style={styles.buttonText}>Kirjaudu</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
+      <Text style={styles.buttonText}>Rekisteröidy</Text>
+      </TouchableOpacity>
+
+>>>>>>> origin/main
     </View>
   );
 };

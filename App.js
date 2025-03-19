@@ -6,8 +6,12 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import Navbar from "./components/bottomNavBar";
+<<<<<<< HEAD
 import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
+=======
+import ProfileScreen from "./screens/ProfileScreen";
+>>>>>>> origin/main
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +25,8 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={Navbar} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
