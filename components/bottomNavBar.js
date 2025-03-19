@@ -9,6 +9,7 @@ import CommunityScreen from "../screens/CommunityScreen";
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
+
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
