@@ -6,7 +6,6 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import Navbar from "./components/bottomNavBar";
-import { firestore } from "./firebase/Config";
 import ProfileScreen from "./screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
