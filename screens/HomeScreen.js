@@ -16,7 +16,7 @@ export default function HomeScreen() {
       const [camera, setCamera] = useState('')
       const [location, setLocation] = useState({
           latitude: 65.0100,
-          longitude: 65.0100,
+          longitude: 25.4719,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         })
@@ -82,7 +82,7 @@ export default function HomeScreen() {
         camera={{
           center: {
             latitude: 65.010,
-            longitude: 65.010,
+            longitude: 25.4719,
           },
           pitch: 90, 
           heading: 0,
