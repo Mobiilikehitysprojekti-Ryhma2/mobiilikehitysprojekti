@@ -1,18 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Colors } from "../theme/colors";
-import { useFonts, Exo_600SemiBold } from "@expo-google-fonts/exo";
 
 const WelcomeScreen = ({ navigation }) => {
-  let [fontsLoaded, fontError] = useFonts({ Exo_600SemiBold });
-
-  if (!fontsLoaded && fontError) {
-    return null;
-  }
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
       <Image
         source={require("../assets/background.jpg")}
         style={styles.image}
@@ -33,16 +26,6 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Rekisteröidy</Text>
         </TouchableOpacity>
       </View>
-=======
-      <Text style={styles.text}>Tervetuloa Appiin</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')} >
-      <Text style={styles.buttonText}>Kirjaudu</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
-      <Text style={styles.buttonText}>Rekisteröidy</Text>
-      </TouchableOpacity>
-
->>>>>>> origin/main
     </View>
   );
 };
