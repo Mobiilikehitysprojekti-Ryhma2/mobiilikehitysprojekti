@@ -6,28 +6,27 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import Navbar from "./components/bottomNavBar";
-<<<<<<< HEAD
 import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
-=======
 import ProfileScreen from "./screens/ProfileScreen";
->>>>>>> origin/main
+import { AuthProvider } from "./context/AuthContext";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={Colors.onPrimaryFixed} />
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Home" component={Navbar} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <StatusBar backgroundColor={Colors.onPrimaryFixed} />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Home" component={Navbar} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
