@@ -2,6 +2,7 @@ import React from "react"
 import { TouchableOpacity } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
+import { Colors } from "../theme/colors";
 
 // Button can be used to navigate within the app as in
 // <NavigateButton title="title" iconName="iconName" screenName="ScreenName"/>
@@ -17,7 +18,7 @@ const NavigateButton = (props) => {
       title={props.title ? props.title : props.screenName}
       onPress={() => navigation.navigate(props.screenName)}
     >
-      <Ionicons name="chevron-forward-outline" size={32} />
+      <Ionicons name="chevron-forward-outline" size={32} color={Colors.onPrimaryContainer} />
     </TouchableOpacity>
   )
 }
