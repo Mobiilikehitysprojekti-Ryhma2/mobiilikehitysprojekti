@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, Button, SafeAreaView } from "react-native";
 import { useEffect, useRef } from 'react';
 import MapView, { Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
 import {Marker} from 'react-native-maps';
-
+import { FAB } from 'react-native-paper';
 
 export default function HomeScreen() {
     const [search, setSearch] = useState('');
@@ -67,17 +67,10 @@ export default function HomeScreen() {
 
 
 
-  return ( <View style={styles.container}>
-    <TextInput
-      style={styles.searchBar}
-      placeholder="Hae..."
-      value={search}
-      onChangeText={handleSearchChange}
-    />
+  return ( <SafeAreaView style={{ flex: 1 }}>
     
-    <Text style={styles.content}>Hakutulokset</Text>
     <MapView
-        style={styles.map}
+        style={{ flex: 1 }}
         mapType="hybrid"
         camera={{
           center: {
@@ -93,10 +86,27 @@ export default function HomeScreen() {
         showsCompass={false}
         showsBuildings={true}
         pitchEnabled={false}
-      />
+      >
 
+<Marker  coordinate={{
+        latitude: location.latitude,
+        longitude: location.longitude
+        }}
+        title="Oma sijainti"
+        >
+<Image source={require('../images/marker.png')} style={{height: 40, width: 40 }} />
 
-  </View>
+</Marker>
+</MapView>
+<TextInput
+      style={styles.searchBar}
+      placeholder="Hae..."
+      value={search}
+      onChangeText={handleSearchChange}
+    />
+    
+    <Text style={styles.content}>Hakutulokset</Text>
+  </SafeAreaView>
 );
 }
 
