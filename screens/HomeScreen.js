@@ -6,20 +6,15 @@ import * as Location from 'expo-location';
 import {Marker} from 'react-native-maps';
 import { FAB } from 'react-native-paper';
 
-export default function HomeScreen() {
-    const [search, setSearch] = useState('');
-
-    const handleSearchChange = (text) => {
-        setSearch(text);
-      };
-
-      const [camera, setCamera] = useState('')
-      const [location, setLocation] = useState({
-          latitude: 65.0100,
-          longitude: 25.4719,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        })
+export default function HomeScreen({ navigation }) {
+  const [search, setSearch] = useState("");
+  const [camera, setCamera] = useState('')
+  const [location, setLocation] = useState({
+      latitude: 65.0100,
+      longitude: 25.4719,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    })
         
         useEffect(() => {
         (async() =>{
@@ -27,6 +22,10 @@ export default function HomeScreen() {
         })()
           
         }, [])
+  
+      const handleSearchChange = (text) => {
+        setSearch(text);
+      };
   
       const getUserPosition = async () => {
           let { status } = await Location.requestForegroundPermissionsAsync();

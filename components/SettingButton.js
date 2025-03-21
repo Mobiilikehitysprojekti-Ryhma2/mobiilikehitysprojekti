@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Text, View, StyleSheet, Switch, Button } from 'react-native'
 import NavigateButton from './NavigateButton'
 import { Ionicons } from "@expo/vector-icons"
+import { Colors } from "../theme/colors";
 
 // Button for changing setting or navigating to other screes
 
@@ -23,13 +24,18 @@ export default function SettingButton(props) {
     return (
         <View style={styles.container}>
             <View style={styles.settingContainer}>
-                <Ionicons name={props.iconName} size={32} />
+                <Ionicons name={props.iconName} size={32} color={Colors.onPrimaryContainer} style={styles.icon} />
                 <Text style={styles.text}>{props.title}</Text>
 
                 {props.type === "switch" &&
                     <Switch
                         onValueChange={toggleSwitch}
                         value={isEnabled}
+                        trackColor={{
+                            true: Colors.onPrimaryContainer,
+                            false: undefined,
+                          }}
+                          thumbColor={isEnabled ? Colors.onPrimaryFixed : undefined}
                     />}
 
                 {props.type === "navigate" && <NavigateButton title={props.title} screenName={props.screenName} />}
@@ -40,26 +46,24 @@ export default function SettingButton(props) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#ffffff",
-        paddingLeft: 12,
-        paddingRight: 12,
-
+        backgroundColor: Colors.background,
     },
     text: {
         fontSize: 16,
-
+        color: Colors.onPrimaryContainer,
+        textAlign: "left",
+        flex: 1,
     },
-
     settingContainer: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        backgroundColor: "#ffffff",
+        backgroundColor: Colors.onPrimary,
         width: "100%",
         height: "auto",
-        paddingTop: 16,
-        paddingBottom: 16,
+        padding: 16,
+    },
+    icon: {
+        marginRight: 30,
     }
-
-
 });
