@@ -1,29 +1,22 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Colors } from "../theme/colors";
-import { useFonts, Exo_400Regular } from "@expo-google-fonts/exo";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAuth } from "../context/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("jee@jee.com");
+  const [password, setPassword] = useState("jee123");
+  const { login } = useAuth();
 
-  let [fontsLoaded, fontError] = useFonts({ Exo_400Regular });
-
-  if (!fontsLoaded && fontError) {
-    return null;
-  }
-
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+  // Function to handle login 
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+      navigation.replace("Home");
+    } catch (error) {
+      console.error("Login error:", error.message);
+    }
   };
 
   return (
@@ -61,10 +54,6 @@ const LoginScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Kirjaudu</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-          <Text style={styles.loginButtonText}>Jatka</Text>
         </TouchableOpacity>
 
         <Text style={styles.registerText}>Eikö sinulla ole vielä tiliä?</Text>
@@ -144,12 +133,13 @@ const styles = StyleSheet.create({
   },
   registerText: {
     marginTop: 50,
-    color: "#333",
+    color: Colors.onPrimaryContainer,
     fontSize: 14,
   },
   registerLink: {
     fontWeight: "bold",
-    color: "#0F5D52",
+    color: Colors.onPrimaryContainer,
+    fontSize: 16,
     textDecorationLine: "underline",
   },
 });
