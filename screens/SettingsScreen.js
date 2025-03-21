@@ -2,11 +2,19 @@ import React from "react";
 import SettingButton from "../components/SettingButton";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import LogoutButton from "../components/LogoutButton";
+import { Colors } from "../theme/colors";
 
-export default function SettingsScreen({navigation}) {
+export default function SettingsScreen({ navigation }) {
+  
+  // Function to handle logout confirmation
+  const handleLogoutConfirmed = () => {
+    // Navigate to Welcome screen after logout
+    navigation.replace("Welcome");
+  };
+
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back-outline" size={42} />
@@ -20,11 +28,7 @@ export default function SettingsScreen({navigation}) {
         screenName={"Profile"}
         iconName={"person-outline"}
       />
-      <SettingButton
-        title={"Teema"}
-        type={"switch"}
-        iconName={"eye-outline"}
-      />
+      <SettingButton title={"Tumma teema"} type={"switch"} iconName={"eye-outline"} />
       <SettingButton
         title={"Tilin yksityisyys"}
         type={"navigate"}
@@ -44,15 +48,11 @@ export default function SettingsScreen({navigation}) {
         iconName={"trash-outline"}
       />
 
-
-      <View style={styles.container}>
-        <SettingButton
-          title={"Kirjaudu ulos"}
-          type={"navigate"}
-          screenName={"Welcome"}
-          iconName={"log-out-outline"}
-        />
-      </View>
+      <LogoutButton
+        title="Kirjaudu ulos"
+        iconName="log-out-outline"
+        onLogoutConfirmed={handleLogoutConfirmed}
+      />
     </View>
   );
 }
@@ -61,28 +61,21 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 32,
     paddingBottom: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: "#F4FBF9"
+    height: "100%",
+    alignItems: "center",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
-
-
   },
   headerText: {
     flex: 1,
-    fontSize: 42,
     textAlign: "center",
+    fontSize: 40,
+    color: Colors.onPrimaryContainer,
+    fontFamily: "Exo_400Regular",
   },
-  setting: {
-    backgroundColor: "#ffffff",
-    width: "80%",
-    height: 16,
-  }
-
-
 });
