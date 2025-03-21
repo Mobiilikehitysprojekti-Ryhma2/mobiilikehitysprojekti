@@ -10,8 +10,13 @@ const WelcomeScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
       <Text style={styles.buttonText}>Rekisteröidy</Text>
-      </TouchableOpacity>
-
+      </TouchableOpacity>     
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+      <Text style={styles.buttonText}>HomeNappiTestaustaVarten</Text>
+      </TouchableOpacity>   
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Data')}>
+      <Text style={styles.buttonText}>TilastoSivuTestaustaVarten</Text>
+      </TouchableOpacity>   
     </View>
   );
 };
