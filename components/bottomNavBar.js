@@ -4,11 +4,12 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import AchievementsScreen from "../screens/AchievementsScreen";
-import CommunityScreen from "../screens/CommunityScreen"
+import CommunityScreen from "../screens/CommunityScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
+
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
