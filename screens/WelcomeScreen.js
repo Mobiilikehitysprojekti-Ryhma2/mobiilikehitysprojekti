@@ -26,6 +26,7 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Rekisteröidy</Text>
         </TouchableOpacity>
       </View>
+
     </View>
   );
 };

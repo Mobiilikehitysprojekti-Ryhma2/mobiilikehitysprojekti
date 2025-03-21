@@ -8,6 +8,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import Navbar from "./components/bottomNavBar";
 import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
+import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -24,6 +25,7 @@ export default function App() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={Navbar} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Data" component={DataScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
