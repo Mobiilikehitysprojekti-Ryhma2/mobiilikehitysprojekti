@@ -11,6 +11,10 @@ import { StatusBar } from "expo-status-bar";
 import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { AuthProvider } from "./context/AuthContext";
+import FriendScreen from "./screens/FriendsScreen";
+import SearchUsersScreen from "./screens/SearchUsersScreen";
+import ChatScreen from "./screens/ChatScreen"
+import RecentCommentsScreen from "./screens/RecentCommentsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +31,10 @@ export default function App() {
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Data" component={DataScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Friends" component={FriendScreen} />
+          <Stack.Screen name="Search Users" component={SearchUsersScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen} />
+          <Stack.Screen name="Recent Comments" component={RecentCommentsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
