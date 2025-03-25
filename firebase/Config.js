@@ -15,12 +15,12 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWith
 import Constants from 'expo-constants';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAMGUiSEtoOoPYP1r3DBH7bsUt44t4GOpI",
-  authDomain: "chat-2025-40090.firebaseapp.com",
-  projectId: "chat-2025-40090",
-  storageBucket: "chat-2025-40090.firebasestorage.app",
-  messagingSenderId: "257504185900",
-  appId: "1:257504185900:web:ddc33c69ecd228dfb98b89"
+  apiKey: Constants.expoConfig.extra.firebaseApiKey,
+  authDomain: Constants.expoConfig.extra.firebaseAuthDomain,
+  projectId: Constants.expoConfig.extra.firebaseProjectId,
+  storageBucket: Constants.expoConfig.extra.firebaseStorageBucket,
+  messagingSenderId: Constants.expoConfig.extra.firebaseMessagingSenderId,
+  appId: Constants.expoConfig.extra.firebaseAppId,
 };
 
 initializeApp(firebaseConfig);
