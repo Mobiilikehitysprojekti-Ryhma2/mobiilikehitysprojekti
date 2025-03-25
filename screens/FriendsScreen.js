@@ -45,7 +45,7 @@ export default function FriendScreen({ navigation }) {
         renderItem={({ item }) => (
           <View style={styles.userItem}>
             <Text>{item.name}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Chat", { user: item })}>
               <Ionicons name="chatbubble-outline" size={32} />
             </TouchableOpacity>
           </View>

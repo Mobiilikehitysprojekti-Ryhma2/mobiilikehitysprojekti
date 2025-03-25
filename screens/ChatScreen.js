@@ -13,9 +13,11 @@ import {
 import { Colors } from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ChatScreen({ navigation }) {
+export default function ChatScreen({ navigation, route }) {
+  const { user } = route.params; //User information from the previous page
+
   const [messages, setMessages] = useState([
-    { id: "1", text: "Moi! Miten menee?", sender: "other" },
+    { id: "1", text: "Moi! Miten menee?", sender: "user" },
     { id: "2", text: "Hyvin, entä sinulla?", sender: "me" },
   ]);
   const [newMessage, setNewMessage] = useState("");
@@ -47,7 +49,7 @@ export default function ChatScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back-outline" size={42} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Chat</Text>
+        <Text style={styles.headerText}>{user.name}</Text>
       </View>
       <FlatList
         ref={flatListRef}
@@ -134,6 +136,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderTop: 16,
     borderColor: "#aaa",
+    shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+
   },
   input: {
     flex: 1,
