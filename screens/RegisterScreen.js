@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Colors } from "../theme/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import Button from "../components/Button";
 
 const RegisterScreen = ({ navigation }) => {
   const { register } = useAuth();
@@ -87,9 +88,11 @@ const RegisterScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-          <Text style={styles.registerButtonText}>Rekisteröidy</Text>
-        </TouchableOpacity>
+        <Button
+          onPress={handleRegister}
+          title="Rekisteröidy"
+          styleType="secondary"
+        />
 
         <Text style={styles.loginText}>Onko sinulla jo tili?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -176,20 +179,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     width: "100%",
   },
-  registerButton: {
-    width: 190,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 40,
-    borderWidth: 0,
-    backgroundColor: Colors.onPrimaryFixed,
-    margin: 20,
-  },
-  registerButtonText: {
-    color: "white",
-    fontSize: 16,
-    textAlign: "center",
-  },
   loginText: {
     marginTop: 50,
     color: Colors.onPrimaryContainer,
@@ -201,6 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textDecorationLine: "underline",
   },
+  
   /* Modal styles */
   modalContainer: {
     flex: 1,
@@ -218,7 +208,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
-    color: Colors.onPrimaryContainer
+    color: Colors.onPrimaryContainer,
   },
   modalButton: {
     padding: 10,
