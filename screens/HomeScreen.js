@@ -7,9 +7,6 @@ import {Marker, Polyline} from 'react-native-maps';
 import { FAB } from 'react-native-paper';
 import MapViewDirections from 'react-native-maps-directions';
 
-
-
-
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [camera, setCamera] = useState('')
@@ -19,8 +16,6 @@ export default function HomeScreen({ navigation }) {
  const [showAppOptions, setShowAppOptions] = useState(false);
  const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
  const [polylineCoordinates, setPolylineCoordinates] = useState([]);
-
-
 
   const [location, setLocation] = useState({
       latitude: 65.0100,
@@ -40,11 +35,6 @@ export default function HomeScreen({ navigation }) {
         setSearch(text);
       };
   
-
-
-
-
-
 
       const getUserPosition = async () => {
           let { status } = await Location.requestForegroundPermissionsAsync();
