@@ -18,6 +18,9 @@ export default function HomeScreen({ navigation }) {
  // const destination = {latitude: 65.0345, longitude: 25.2851};
  const [showAppOptions, setShowAppOptions] = useState(false);
  const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
+ const [polylineCoordinates, setPolylineCoordinates] = useState([]);
+
+
 
   const [location, setLocation] = useState({
       latitude: 65.0100,
@@ -86,7 +89,7 @@ export default function HomeScreen({ navigation }) {
 
         const onReset = () => {
           setMarkers([]);
-
+          setPolylineCoordinates([]);
 
         };
       
@@ -109,9 +112,19 @@ export default function HomeScreen({ navigation }) {
           setShowAppOptions(prevState => !prevState);
         };
 
+     
 
-
-
+        const Matkatesti = () => {
+        
+          setPolylineCoordinates([
+            { latitude: 65.06254, longitude: 25.46997 },
+            { latitude: 65.06293, longitude: 25.46756 },
+            { latitude: 65.06464, longitude: 25.46799 },
+            { latitude: 65.06462, longitude: 25.47168 },
+            { latitude: 65.06424, longitude: 25.47498 },
+            { latitude: 65.06282, longitude: 25.47494 },
+          ]);
+        };
 
   return ( <SafeAreaView style={{ flex: 1 }}>
     
@@ -154,18 +167,13 @@ export default function HomeScreen({ navigation }) {
             coordinate={marker.coordinate}
           />
         ))}
-<Polyline
-    coordinates={[
-      {latitude: 65.06254, longitude: 25.46997},
-      {latitude: 65.06293, longitude: 25.46756},
-      {latitude: 65.06464, longitude: 25.46799},
-      {latitude: 65.06462, longitude: 25.47168},
-      {latitude: 65.06424, longitude: 25.47498},
-      {latitude: 65.06282, longitude: 25.47494},
-    ]}
-    strokeColor="red" 
-    strokeWidth={4}
-  />
+{polylineCoordinates.length > 0 && (
+          <Polyline
+            coordinates={polylineCoordinates}
+            strokeColor="red"
+            strokeWidth={4}
+          />
+        )}
 
 </MapView>
 <Button title="Show Options" onPress={toggleAppOptions} />
@@ -174,6 +182,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.modalContent}>
             <Button title="Reset" onPress={onReset} />
             <Button title="Reitti" onPress={Routefinder} />
+            <Button title="kuljettumatkatesti" onPress={Matkatesti} />
           </View>
         </View>
       )}

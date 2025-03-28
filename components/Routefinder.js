@@ -4,6 +4,12 @@ import React from 'react';
 
 
 const Routefinder = ({ closeModal }) => {
+
+//tänne kohteiden haku backendistä kun saadaan päätettyä backendin malli
+
+
+
+
   return (
     <Modal
       transparent={true}
