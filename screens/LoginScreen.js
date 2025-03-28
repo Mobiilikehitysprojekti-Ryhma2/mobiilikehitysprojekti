@@ -14,8 +14,8 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await login(email, password);
-      navigation.replace("Home");
-    } catch (error) {
+/*       navigation.replace("Home");
+ */    } catch (error) {
       console.error("Login error:", error.message);
     }
   };
