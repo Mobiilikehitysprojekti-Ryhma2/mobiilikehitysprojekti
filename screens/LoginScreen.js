@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Colors } from "../theme/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
+import Button from "../components/Button";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("jee@jee.com");
@@ -13,8 +14,8 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       await login(email, password);
-      navigation.replace("Home");
-    } catch (error) {
+/*       navigation.replace("Home");
+ */    } catch (error) {
       console.error("Login error:", error.message);
     }
   };
@@ -52,9 +53,11 @@ const LoginScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Kirjaudu</Text>
-        </TouchableOpacity>
+        <Button
+          onPress={handleLogin}
+          title="Kirjaudu"
+          styleType="secondary"
+        />
 
         <Text style={styles.registerText}>Eikö sinulla ole vielä tiliä?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondaryContainer,
     borderRadius: 10,
     paddingHorizontal: 10,
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 5,
   },
   input: {
@@ -116,20 +119,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     color: Colors.secondary,
-  },
-  loginButton: {
-    width: 190,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 40,
-    borderWidth: 0,
-    backgroundColor: Colors.onPrimaryFixed,
-    margin: 20,
-  },
-  loginButtonText: {
-    color: "white",
-    fontSize: 16,
-    textAlign: "center",
   },
   registerText: {
     marginTop: 50,

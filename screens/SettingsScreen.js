@@ -6,12 +6,6 @@ import LogoutButton from "../components/LogoutButton";
 import { Colors } from "../theme/colors";
 
 export default function SettingsScreen({ navigation }) {
-  
-  // Function to handle logout confirmation
-  const handleLogoutConfirmed = () => {
-    // Navigate to Welcome screen after logout
-    navigation.replace("Welcome");
-  };
 
   return (
     <View style={styles.container}>
@@ -51,7 +45,6 @@ export default function SettingsScreen({ navigation }) {
       <LogoutButton
         title="Kirjaudu ulos"
         iconName="log-out-outline"
-        onLogoutConfirmed={handleLogoutConfirmed}
       />
     </View>
   );

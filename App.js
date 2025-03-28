@@ -10,24 +10,43 @@ import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
 import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import { AuthProvider } from "./context/AuthContext";
+import { useAuth, AuthProvider } from "./context/AuthContext";
 
 const Stack = createNativeStackNavigator();
+
+function AppNavigator() {
+  const { user } = useAuth();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {!user ? (
+        <>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Home" component={Navbar} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="Data" component={DataScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <AuthProvider>
       <NavigationContainer>
         <StatusBar backgroundColor={Colors.onPrimaryFixed} />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="Home" component={Navbar} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen name="Data" component={DataScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-        </Stack.Navigator>
+        <AppNavigator />
       </NavigationContainer>
     </AuthProvider>
   );
