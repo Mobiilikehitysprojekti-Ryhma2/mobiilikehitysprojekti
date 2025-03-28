@@ -22,27 +22,16 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
-      console.log(currentUser)
+      console.log("Current user: ", currentUser)
     });
     return unsubscribe;
   }, []); 
-
-  // Register function
-  /* const register = async (email, password) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      console.error("Registration failed:", error.message);
-    }
-  }; */
 
   // Register function
   const register = async (email, password, username) => {
     try {
       const userCredentials = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredentials.user
-
-      console.log('Username:', username);
 
       // Save user data to Firestore
       await setDoc(doc(firestore, "users", user.uid), {
