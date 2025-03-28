@@ -28,7 +28,6 @@ const RegisterScreen = ({ navigation }) => {
     }
     try {
       await register(email, password, username);
-      navigation.navigate("Login");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setErrorMessage("Sähköposti on jo käytössä");
