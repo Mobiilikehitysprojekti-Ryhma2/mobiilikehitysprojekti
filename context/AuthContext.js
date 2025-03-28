@@ -5,6 +5,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   createUserWithEmailAndPassword,
+  setDoc,
+  doc,
+  firestore,
 } from "../firebase/Config";
 
 const AuthContext = createContext();
@@ -25,18 +28,47 @@ export function AuthProvider({ children }) {
   }, []); 
 
   // Register function
-  const register = async (email, password) => {
+  /* const register = async (email, password) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error("Registration failed:", error.message);
     }
-  };
+  }; */
+
+  // Register function
+  const register = async (email, password, username) => {
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password)
+      const user = userCredentials.user
+
+      console.log('Username:', username);
+
+      // Save user data to Firestore
+      await setDoc(doc(firestore, "users", user.uid), {
+        username: username,
+        email: email,
+        createdAt: new Date().toISOString()
+      })
+
+      setUser({uid: user.uid, username, email})
+    } catch (error) {
+      console.error("Registration failed:", error.message)
+    }
+  }
+
 
   // Login function
   const login = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredentials.user;
+      
+      // Update user state after login
+      setUser({
+        uid: user.uid,
+        email: user.email,
+      });
     } catch (error) {
       console.error("Login failed:", error.message);
     }
