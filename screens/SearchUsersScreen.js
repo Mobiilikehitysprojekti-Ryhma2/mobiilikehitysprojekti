@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
-  Button,
   FlatList,
   Text,
   StyleSheet,
@@ -10,21 +9,36 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/colors";
-
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../firebase/Config";
 
 const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState([
-    { id: "1", name: "Käyttäjä1" },
-    { id: "2", name: "Käyttäjä2" },
-    { id: "3", name: "Käyttäjä3" },
-    { id: "4", name: "Käyttäjä4" },
-    { id: "5", name: "Käyttäjä5" },
-  ]);
+  const [users, setUsers] = useState([]);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //Fetch users from firebase
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, "users"));
+        const usersList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(usersList);
+      } catch (error) {
+        console.error("Error fetching users: ", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  
+  const filteredUsers = users.filter(user =>
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
 
   return (
     <View style={styles.container}>
@@ -54,33 +68,26 @@ const SearchUsersScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        paddingTop: 32,
-        paddingBottom: 16,
-        height: "100%",
-        alignItems: "center",
-        backgroundColor: Colors.background,
-        flex: 1,
-        padding: 20,
-        backgroundColor: "#f5f5f5",
-      },
-      header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 16,
-      },
-      headerText: {
-        flex: 1,
-        textAlign: "center",
-        fontSize: 40,
-        color: Colors.onPrimaryContainer,
-        fontFamily: "Exo_400Regular",
-      },
   container: {
     flex: 1,
+    paddingTop: 32,
+    paddingBottom: 16,
+    backgroundColor: Colors.background || "#f5f5f5",
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    width: "100%",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+  },
+  headerText: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 40,
+    color: Colors.onPrimaryContainer,
+    fontFamily: "Exo_400Regular",
   },
   input: {
     height: 40,
