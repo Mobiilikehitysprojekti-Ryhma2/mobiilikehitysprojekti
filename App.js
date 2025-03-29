@@ -10,23 +10,32 @@ import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
 import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import { AuthProvider } from "./context/AuthContext";
+import { useAuth,AuthProvider } from "./context/AuthContext";
 import FriendsScreen from "./screens/FriendsScreen";
 import SearchUsersScreen from "./screens/SearchUsersScreen";
 import ChatScreen from "./screens/ChatScreen"
 import RecentCommentsScreen from "./screens/RecentCommentsScreen";
 
+
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function AppNavigator() {
+  const { user } = useAuth();
+
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar backgroundColor={Colors.onPrimaryFixed} />
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {!user ? (
+        <>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+        </>
+      ) : (
+        <>
           <Stack.Screen name="Home" component={Navbar} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Data" component={DataScreen} />
@@ -36,6 +45,18 @@ export default function App() {
           <Stack.Screen name="Chat" component={ChatScreen} />
           <Stack.Screen name="Recent Comments" component={RecentCommentsScreen} />
         </Stack.Navigator>
+        </>
+      )}
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <StatusBar backgroundColor={Colors.onPrimaryFixed} />
+        <AppNavigator />
       </NavigationContainer>
     </AuthProvider>
   );

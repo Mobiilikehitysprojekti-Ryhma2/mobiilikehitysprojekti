@@ -3,13 +3,14 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Colors } from "../theme/colors";
 import { MaterialIcons } from "@expo/vector-icons";
+import Button from "../components/Button";
 
 const RegisterScreen = ({ navigation }) => {
   const { register } = useAuth();
-  const [email, setEmail] = useState("");
-  /* const [username, setUsername] = useState(""); */
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("jee@jee.com");
+  const [username, setUsername] = useState("jee");
+  const [password, setPassword] = useState("jee123");
+  const [confirmPassword, setConfirmPassword] = useState(password);
   const [modalVisible, setModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -20,8 +21,13 @@ const RegisterScreen = ({ navigation }) => {
       setModalVisible(true);
       return;
     }
+    if (!username || username.trim() === "") {
+      setErrorMessage("Käyttäjänimi on pakollinen");
+      setModalVisible(true);
+      return;
+    }
     try {
-      await register(email, password);
+      await register(email, password, username);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setErrorMessage("Sähköposti on jo käytössä");
@@ -55,14 +61,15 @@ const RegisterScreen = ({ navigation }) => {
             keyboardType="email-address"
           />
         </View>
-        {/* <View style={styles.inputContainer}>
+        <View style={styles.inputContainer}>
+          <MaterialIcons name="person" size={20} color={Colors.secondary} />
           <TextInput
             style={styles.input}
             placeholder="Käyttäjänimi"
             value={username}
             onChangeText={setUsername}
           />
-        </View> */}
+        </View>
         <View style={styles.inputContainer}>
           <MaterialIcons name="lock" size={20} color={Colors.secondary} />
           <TextInput
@@ -87,9 +94,7 @@ const RegisterScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-          <Text style={styles.registerButtonText}>Rekisteröidy</Text>
-        </TouchableOpacity>
+        <Button onPress={handleRegister} title="Rekisteröidy" styleType="secondary" />
 
         <Text style={styles.loginText}>Onko sinulla jo tili?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -163,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondaryContainer,
     borderRadius: 10,
     paddingHorizontal: 10,
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 5,
   },
   input: {
@@ -176,22 +181,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     width: "100%",
   },
-  registerButton: {
-    width: 190,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 40,
-    borderWidth: 0,
-    backgroundColor: Colors.onPrimaryFixed,
-    margin: 20,
-  },
-  registerButtonText: {
-    color: "white",
-    fontSize: 16,
-    textAlign: "center",
-  },
   loginText: {
-    marginTop: 50,
+    marginTop: 20,
     color: Colors.onPrimaryContainer,
     fontSize: 14,
   },
@@ -201,6 +192,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textDecorationLine: "underline",
   },
+
   /* Modal styles */
   modalContainer: {
     flex: 1,
@@ -218,7 +210,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
-    color: Colors.onPrimaryContainer
+    color: Colors.onPrimaryContainer,
   },
   modalButton: {
     padding: 10,

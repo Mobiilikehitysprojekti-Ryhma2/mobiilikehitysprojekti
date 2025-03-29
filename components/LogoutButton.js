@@ -11,7 +11,6 @@ const LogoutButton = ({ iconName, title, onLogoutConfirmed }) => {
   // Function to handle logout
   const handleLogout = () => {
     logout();
-    onLogoutConfirmed();
     setModalVisible(false);
   };
 
