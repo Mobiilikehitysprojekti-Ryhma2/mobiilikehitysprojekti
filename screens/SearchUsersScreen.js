@@ -6,6 +6,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Image
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/colors";
@@ -34,10 +35,30 @@ const SearchUsersScreen = ({ navigation }) => {
     fetchUsers();
   }, []);
 
-  
+
   const filteredUsers = users.filter(user =>
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+    // Add friend
+    const addFriend = async (friendId) => {
+      try {
+        const userRef = doc(firestore, "users", currentUserId);
+        const friendRef = doc(firestore, "users", friendId);
+  
+        // Add to both friend lists
+        await updateDoc(userRef, {
+          friends: arrayUnion(friendId),
+        });
+        await updateDoc(friendRef, {
+          friends: arrayUnion(currentUserId),
+        });
+  
+        console.log("Kaveri lisätty onnistuneesti!");
+      } catch (error) {
+        console.error("Virhe kaverin lisäämisessä: ", error);
+      }
+    };
   
 
   return (
@@ -59,7 +80,19 @@ const SearchUsersScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.userItem}>
-            <Text>{item.name}</Text>
+            <Image
+              source={{ uri: item.profilePicture }}
+              style={styles.userImage}
+            />
+              <Text style={styles.userName}>{item.name}</Text>
+            
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => addFriend(item.id)}
+              >
+                <Text style={styles.addButtonText}>Lisää kaveriksi</Text>
+              </TouchableOpacity>
+            
           </View>
         )}
       />
@@ -72,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 32,
     paddingBottom: 16,
-    backgroundColor: Colors.background || "#f5f5f5",
+    backgroundColor: Colors.background,
     padding: 20,
     width: "100%",
   },
@@ -103,7 +136,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: Colors.background,
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+    borderWidth:3,
+    borderColor: Colors.onPrimaryContainer,
+  },
+  userName: {
+    fontSize: 18,
+    color: Colors.onPrimaryContainer
+  },
+  addButton: {
+    marginTop: 10,
+    backgroundColor: Colors.primary,
+    padding: 10,
+    borderRadius: 5,
+  },
+  addButtonText: {
+    color: "#fff",
+    textAlign: "center",
   },
 });
 
