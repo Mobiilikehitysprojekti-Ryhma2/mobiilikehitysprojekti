@@ -3,10 +3,10 @@ import SettingButton from "../components/SettingButton";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import LogoutButton from "../components/LogoutButton";
+import DeleteAccountButton from "../components/DeleteAccountButton";
 import { Colors } from "../theme/colors";
 
 export default function SettingsScreen({ navigation }) {
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -35,17 +35,10 @@ export default function SettingsScreen({ navigation }) {
         screenName={"Welcome"}
         iconName={"location-outline"}
       />
-      <SettingButton
-        title={"Tilin poisto"}
-        type={"navigate"}
-        screenName={"Profile"}
-        iconName={"trash-outline"}
-      />
 
-      <LogoutButton
-        title="Kirjaudu ulos"
-        iconName="log-out-outline"
-      />
+      <DeleteAccountButton />
+
+      <LogoutButton />
     </View>
   );
 }
