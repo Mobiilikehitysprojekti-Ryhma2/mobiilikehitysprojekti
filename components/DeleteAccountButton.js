@@ -5,38 +5,33 @@ import { useAuth } from "../context/AuthContext";
 import { Colors } from "../theme/colors";
 import ConfirmationModal from "../components/ConfirmationModal";
 
-const LogoutButton = () => {
-  const { logout } = useAuth();
+const DeleteAccountButton = () => {
+  const { deleteAccount } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Function to handle logout
-  const handleLogout = () => {
-    logout();
+  const handleDeleteAccount = async () => {
+    await deleteAccount();
     setModalVisible(false);
   };
 
   return (
     <View>
-      <View style={styles.logoutButtonContainer}>
-        <Ionicons name="log-out-outline" size={32} color={Colors.onPrimaryContainer} />
-        <Text style={styles.buttonText}>Kirjaudu ulos</Text>
+      <View style={styles.buttonContainer}>
+        <Ionicons name="trash-outline" size={32} color={Colors.onPrimaryContainer} />
+        <Text style={styles.buttonText}>Tilin poisto</Text>
 
-        {/* Chevron-icon */}
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={32}
-            color={Colors.onPrimaryContainer}
-          />
+          <Ionicons name="chevron-forward-outline" size={32} color={Colors.onPrimaryContainer} />
         </TouchableOpacity>
       </View>
 
-      {/* Modal for logout confirmation */}
+      {/* Modal for account deletion */}
       <ConfirmationModal
         visible={modalVisible}
-        text="Haluatko varmasti kirjautua ulos?"
-        onConfirm={handleLogout}
+        text="Haluatko varmasti poistaa tilisi?"
+        onConfirm={handleDeleteAccount}
         onCancel={() => setModalVisible(false)}
+        buttonStyle={{backgroundColor: "#ca2b2b"}}
       />
 
     </View>
@@ -44,13 +39,12 @@ const LogoutButton = () => {
 };
 
 const styles = StyleSheet.create({
-  logoutButtonContainer: {
+  buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: Colors.onPrimary,
     width: "100%",
-    marginTop: 20,
     padding: 16,
   },
   buttonText: {
@@ -59,7 +53,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
   },
-  
 });
 
-export default LogoutButton;
+export default DeleteAccountButton;

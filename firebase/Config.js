@@ -13,7 +13,7 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from "firebase/auth";
 import Constants from 'expo-constants';
 
 const firebaseConfig = {
@@ -46,5 +46,6 @@ export {
   signInWithEmailAndPassword,
   onAuthStateChanged, 
   createUserWithEmailAndPassword, 
-  signOut
+  signOut,
+  deleteUser
 };
