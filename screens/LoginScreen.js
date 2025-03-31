@@ -10,12 +10,11 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("jee123");
   const { login } = useAuth();
 
-  // Function to handle login 
+  // Function to handle login
   const handleLogin = async () => {
     try {
       await login(email, password);
-/*       navigation.replace("Home");
- */    } catch (error) {
+    } catch (error) {
       console.error("Login error:", error.message);
     }
   };
@@ -53,11 +52,7 @@ const LoginScreen = ({ navigation }) => {
           />
         </View>
 
-        <Button
-          onPress={handleLogin}
-          title="Kirjaudu"
-          styleType="secondary"
-        />
+        <Button onPress={handleLogin} title="Kirjaudu" styleType="secondary" />
 
         <Text style={styles.registerText}>Eikö sinulla ole vielä tiliä?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
