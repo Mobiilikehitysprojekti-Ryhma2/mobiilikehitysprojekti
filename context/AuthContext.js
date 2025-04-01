@@ -9,6 +9,7 @@ import {
   setDoc,
   doc,
   firestore,
+  deleteDoc,
 } from "../firebase/Config";
 
 const AuthContext = createContext();
@@ -76,7 +77,8 @@ export function AuthProvider({ children }) {
   const deleteAccount = async () => {
     try {
       if (auth.currentUser) {
-        await deleteUser(auth.currentUser);
+        await deleteDoc(doc(firestore, "users", auth.currentUser.uid)) // Deletes the username from database
+        await deleteUser(auth.currentUser); // Deletes the user's auth account from Firebase Authentication
       }
     } catch (error) {
       console.error("Account deletion failed:", error.message);
