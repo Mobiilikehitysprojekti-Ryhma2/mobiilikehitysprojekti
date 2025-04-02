@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { Colors } from "../theme/colors";
+import Button from "../components/Button";
 
 const WelcomeScreen = ({ navigation }) => {
-
   return (
     <View style={styles.container}>
       <Image
@@ -13,20 +13,20 @@ const WelcomeScreen = ({ navigation }) => {
       />
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Tervetuloa Appiin</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.buttonText}>Kirjaudu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Register")}
-        >
-          <Text style={styles.buttonText}>Rekisteröidy</Text>
-        </TouchableOpacity>
-      </View>
 
+        <Button
+          onPress={() => navigation.navigate("Login")}
+          title="Kirjaudu sisään"
+          styleType="primary"
+        />
+
+        <Button
+          onPress={() => navigation.navigate("Register")}
+          title="Rekisteröidy"
+          styleType="primary"
+        />
+
+      </View>
     </View>
   );
 };
@@ -54,25 +54,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 40,
-    marginBottom: 50,
+    marginBottom: 30,
     width: "70%",
     color: "white",
     textAlign: "center",
     fontFamily: "Exo_600SemiBold",
-  },
-  button: {
-    width: 190,
-    backgroundColor: Colors.onPrimary,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 40,
-    borderWidth: 0,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: Colors.onPrimaryContainer,
-    fontSize: 16,
-    textAlign: "center",
   },
 });
 
