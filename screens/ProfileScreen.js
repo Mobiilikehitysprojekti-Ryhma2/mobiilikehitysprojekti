@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   profileImage: {
     position: "absolute",
-    top: 140,
+    top: 120,
     width: 200,
     height: 200,
     borderRadius: 100,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 40,
     color: Colors.primary,
-    marginTop: 360,
+    marginTop: 340,
     textAlign: "center",
 
   },

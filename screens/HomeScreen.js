@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image, Button, SafeAreaView, Modal } from "react-native";
 import { useEffect, useRef } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView, { Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
 import {Marker, Polyline } from 'react-native-maps';
@@ -8,12 +9,16 @@ import { FAB } from 'react-native-paper';
 import RoutefinderModal from "../components/RoutefinderModal";
 import { getDistance } from 'geolib';
 import uuid from "react-native-uuid"
+import TopAppBar from "../components/TopAppBar";
+import MapSettingsModal from "../components/MapSettingsModal";
+
 
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [camera, setCamera] = useState('')
   const [markers, setMarkers] = useState([]);
   //const origin = {latitude: 65.03439, longitude: 25.2803};
+
  // const destination = {latitude: 65.0345, longitude: 25.2851};
  const [isAppOptionsModalVisible, setIsAppOptionsModalVisible] = useState(false);
  const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
@@ -22,8 +27,10 @@ export default function HomeScreen({ navigation }) {
  const PROXIMITY_THRESHOLD = 50; //metriä 
  const [isModalVisible, setIsModalVisible] = useState(false);
  const [selectedMarker, setSelectedMarker] = useState(null);
-
-
+ const [showAppOptions, setShowAppOptions] = useState(false);
+ const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
+ const [mapType, setMapType] = useState("hybrid");
+  
   const [location, setLocation] = useState({
       latitude: 65.0100,
       longitude: 25.4719,
@@ -81,10 +88,6 @@ export default function HomeScreen({ navigation }) {
                   },
                   zoomRange
                  )
-             
-                  
-                
-
                 }
               }
             );
@@ -92,11 +95,6 @@ export default function HomeScreen({ navigation }) {
           })();
         }, [markers]);
   
-
-
-
-
-
 
         const handleLongPress = (e) => {
           const coordinate = e.nativeEvent.coordinate;
@@ -114,8 +112,6 @@ export default function HomeScreen({ navigation }) {
           setIsModalVisible(false);
       
         };
-
-
 
 
         const openRoutefinderModal = () => {
@@ -143,12 +139,29 @@ export default function HomeScreen({ navigation }) {
           ]);
         };
 
-  return ( <SafeAreaView style={{ flex: 1 }}>
-    
-    <MapView
+  return (
+
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <TopAppBar
+        setMarkers={setMarkers}
+        setModalVisible={setMapSettingsModalVisible}
+        markers={markers}
+        location={location}
+      />
+      <MapView
         style={{ flex: 1 }}
-        mapType="hybrid"
+        mapType={mapType}
         ref={mapRef}
+        Camera={{
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          pitch: 90,
+          heading: 0,
+          zoom: 15,
+        }}
         showsUserLocation={true}
         followUserLocation={true}
         showsCompass={false}
@@ -162,16 +175,17 @@ export default function HomeScreen({ navigation }) {
         cameraZoomRange={zoomRange}
       >
 
-<Marker  coordinate={{
-        latitude: location.latitude,
-        longitude: location.longitude
+        <Marker coordinate={{
+          latitude: location.latitude,
+          longitude: location.longitude
         }}
-        title="Oma sijainti"
+          title="Oma sijainti"
         >
-<Image source={require('../images/marker.png')} style={{height: 40, width: 40 }} />
+          <Image source={require('../images/marker.png')} style={{ height: 40, width: 40 }} />
 
 </Marker>
 {markers.map((item, index) => (
+
           <Marker
           key={item.id}
           title={"Marker " + index}
@@ -183,7 +197,7 @@ export default function HomeScreen({ navigation }) {
 
 
         ))}
-{polylineCoordinates.length > 0 && (
+        {polylineCoordinates.length > 0 && (
           <Polyline
             coordinates={polylineCoordinates}
             strokeColor="red"
@@ -191,6 +205,21 @@ export default function HomeScreen({ navigation }) {
           />
         )}
 
+        {/* This adds the line between self added markers */}
+        {markers.length > 0 && (
+          <Polyline
+            coordinates={[
+              { latitude: location.latitude, longitude: location.longitude },
+              ...markers.map((marker) => ({
+                latitude: marker.coordinate.latitude,
+                longitude: marker.coordinate.longitude,
+              })),
+            ]}
+            strokeColor="red"
+            strokeWidth={6}
+          />
+        )}
+        
 </MapView>
 <Modal
         visible={isModalVisible}
@@ -215,6 +244,7 @@ export default function HomeScreen({ navigation }) {
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
       />
 {isAppOptionsModalVisible && (
+
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Button title="Reset" onPress={onReset} />
@@ -231,41 +261,28 @@ export default function HomeScreen({ navigation }) {
         setMarkers={setMarkers}
       />  
    
-    
-    
+      <MapSettingsModal
+        modalVisible={mapSettingsModalVisible}
+        setModalVisible={setMapSettingsModalVisible}
+        setMapType={setMapType}
+        currentMapType={mapType}
+      />
 
-  </SafeAreaView>
-);
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-container: {
-  flex: 1,
-  padding: 20,
-  backgroundColor: '#006A66',
-},
-searchBar: {
-  height: 40,
-  borderColor: '#ccc',
-  borderWidth: 1,
-  borderRadius: 8,
-  paddingLeft: 10,
-  marginBottom: 20,
-  backgroundColor:"white"
-},
-content: {
-  fontSize: 18,
-}, map: {
-  height: '100%',
-  width: '100%'
-},
-routeContainer: {
-  position: 'absolute',
-  height: 40,
-  bottom: 40,
-},
-optionsRow: {
-  alignItems: 'center',
-  flexDirection: 'row',
-},
+  content: {
+    fontSize: 18,
+  },
+  routeContainer: {
+    position: 'absolute',
+    height: 40,
+    bottom: 40,
+  },
+  optionsRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
 });

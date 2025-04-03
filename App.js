@@ -11,6 +11,8 @@ import { StatusBar } from "expo-status-bar";
 import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { useAuth, AuthProvider } from "./context/AuthContext";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +30,6 @@ function AppNavigator() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
-          
         </>
       ) : (
         <>
@@ -44,11 +45,15 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar backgroundColor={Colors.onPrimaryFixed} />
-        <AppNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar backgroundColor={Colors.onPrimaryFixed} />
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </SafeAreaProvider>
+
   );
 }
