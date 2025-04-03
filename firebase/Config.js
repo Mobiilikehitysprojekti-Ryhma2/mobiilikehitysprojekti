@@ -4,6 +4,7 @@ import {
   collection,
   addDoc,
   setDoc,
+  getDoc,
   deleteDoc,
   doc,
   updateDoc,
@@ -30,15 +31,18 @@ const firestore = getFirestore();
 
 // Firebase testing *****
 const MESSAGES = "messages"
+const USERINFO = "userInfo"
 //*****
 
 
 export {
   firestore,
   MESSAGES,
+  USERINFO,
   collection,
   addDoc,
   setDoc,
+  getDoc,
   deleteDoc,
   doc,
   updateDoc,
