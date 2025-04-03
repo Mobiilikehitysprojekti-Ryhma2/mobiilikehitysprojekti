@@ -29,10 +29,10 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
             let prevMarker;
             markers.forEach((marker) => {
                 if (!firstDistance) {
-                    if (marker.coordinate.latitude && marker.coordinate.longitude) {
+                    if (marker.latitude && marker.longitude) {
                         totalDistance += getDistance(userLocation, {
-                            latitude: marker.coordinate.latitude,
-                            longitude: marker.coordinate.longitude,
+                            latitude: marker.latitude,
+                            longitude: marker.longitude,
                         });
 
                         prevMarker = marker;
@@ -41,8 +41,8 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
                         console.log("error", markers);
                     }
                 } else {
-                    if (marker.coordinate.latitude && marker.coordinate.longitude) {
-                        totalDistance += getDistance(marker.coordinate, prevMarker.coordinate);
+                    if (marker.latitude && marker.longitude) {
+                        totalDistance += getDistance(marker, prevMarker);
                         prevMarker = marker;
                     }
                 }
