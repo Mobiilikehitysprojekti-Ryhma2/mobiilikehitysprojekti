@@ -1,6 +1,6 @@
 import { View, Text, Button, Modal, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
-
+import uuid from "react-native-uuid"
 
 const RoutefinderModal = ({ visible, closeModal, markers, setMarkers }) => {
   
@@ -8,25 +8,18 @@ const RoutefinderModal = ({ visible, closeModal, markers, setMarkers }) => {
 
 const fetchMarkers = () => {
  
-    const coordinate = {latitude: 65.06254, longitude: 25.46997};
-    setMarkers([
-    ...markers,
-    {
-    key: markers.length + 1,
-    coordinate: coordinate
-    }
-    ]);
+    const coordinate = {latitude: 65.06254, longitude: 25.465509};
+    
+          const id = uuid.v4()
+          setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
+          ]);
 }
 // 
 
 const FetchHardMarkers = () => {
   const coordinate = {latitude: 65.06254, longitude: 24.56997};
-  setMarkers([
-  ...markers,
-  {
-  key: markers.length + 1,
-  coordinate: coordinate
-  }
+  const id = uuid.v4()
+  setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
   ]);
 
 
@@ -35,15 +28,9 @@ const FetchHardMarkers = () => {
 const FetchMediumMarkers = () => {
 
   const coordinate = {latitude: 65.06254, longitude: 25.56997};
-  setMarkers([
-  ...markers,
-  {
-  key: markers.length + 1,
-  coordinate: coordinate
-  }
+  const id = uuid.v4()
+  setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
   ]);
-
-
 
 }
 

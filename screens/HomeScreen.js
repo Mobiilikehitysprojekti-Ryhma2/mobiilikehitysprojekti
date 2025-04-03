@@ -3,9 +3,11 @@ import { View, Text, TextInput, StyleSheet, Image, Button, SafeAreaView, Modal }
 import { useEffect, useRef } from 'react';
 import MapView, { Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
-import {Marker, Polyline} from 'react-native-maps';
+import {Marker, Polyline } from 'react-native-maps';
 import { FAB } from 'react-native-paper';
 import RoutefinderModal from "../components/RoutefinderModal";
+import { getDistance } from 'geolib';
+import uuid from "react-native-uuid"
 
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
@@ -17,6 +19,9 @@ export default function HomeScreen({ navigation }) {
  const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
  const [polylineCoordinates, setPolylineCoordinates] = useState([]);
  const mapRef = useRef(null);
+ const PROXIMITY_THRESHOLD = 50; //metriä 
+ const [isModalVisible, setIsModalVisible] = useState(false);
+ const [selectedMarker, setSelectedMarker] = useState(null);
 
 
   const [location, setLocation] = useState({
@@ -25,7 +30,14 @@ export default function HomeScreen({ navigation }) {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     })
-        
+     
+    
+    const zoomRange = {
+      minCenterCoordinateDistance: 30, 
+      maxCenterCoordinateDistance: 100, 
+      animated: true, 
+    };
+
         useEffect(() => {
           (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -43,6 +55,19 @@ export default function HomeScreen({ navigation }) {
               },
               (newLocation) => {
                 setLocation(newLocation.coords);
+                markers.forEach((marker) => {
+                  const distance = getDistance(
+                    
+                    { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
+                    { latitude: marker.latitude, longitude: marker.longitude }
+                  );
+      
+                  if (distance < PROXIMITY_THRESHOLD) {
+                    console.log(markers)
+                    setSelectedMarker(marker);
+                    setIsModalVisible(true);
+                  }
+                });
 
                 if (mapRef.current) {
                   mapRef.current.animateCamera({
@@ -52,26 +77,31 @@ export default function HomeScreen({ navigation }) {
                     },
                     pitch: 90,
                     heading: 0,
-                    zoom: 15,
-                  } )
-
+                    zoom: 50,
+                  },
+                  zoomRange
+                 )
+             
+                  
+                
 
                 }
               }
             );
             return () => locationCheck.remove();
           })();
-        }, []);
+        }, [markers]);
   
+
+
+
+
+
 
         const handleLongPress = (e) => {
           const coordinate = e.nativeEvent.coordinate;
-          setMarkers([
-          ...markers,
-          {
-          key: markers.length + 1,
-          coordinate: coordinate
-          }
+          const id = uuid.v4()
+          setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
           ]);
         };
 
@@ -80,7 +110,12 @@ export default function HomeScreen({ navigation }) {
           setPolylineCoordinates([]);
 
         };
-     
+        const handleModalClose = () => {
+          setIsModalVisible(false);
+      
+        };
+
+
 
 
         const openRoutefinderModal = () => {
@@ -124,6 +159,7 @@ export default function HomeScreen({ navigation }) {
         zoomEnabled={true}
         zoomControlEnabled={false}
         scrollEnabled={true}
+        cameraZoomRange={zoomRange}
       >
 
 <Marker  coordinate={{
@@ -135,11 +171,17 @@ export default function HomeScreen({ navigation }) {
 <Image source={require('../images/marker.png')} style={{height: 40, width: 40 }} />
 
 </Marker>
-{markers.map((marker) => (
+{markers.map((item, index) => (
           <Marker
-            key={marker.key}
-            coordinate={marker.coordinate}
+          key={item.id}
+          title={"Marker " + index}
+          coordinate={{
+            latitude: item.latitude,
+            longitude: item.longitude
+          }}
           />
+
+
         ))}
 {polylineCoordinates.length > 0 && (
           <Polyline
@@ -150,6 +192,24 @@ export default function HomeScreen({ navigation }) {
         )}
 
 </MapView>
+<Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleModalClose}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' }}>
+            {selectedMarker && (
+              <>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{`Marker ${selectedMarker.key}`}</Text>
+                <Text>{`Latitude: ${selectedMarker.latitude}, Longitude: ${selectedMarker.longitude}`}</Text>
+                <Button title="Close" onPress={handleModalClose} />
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
 <Button
         title="Show Options"
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
