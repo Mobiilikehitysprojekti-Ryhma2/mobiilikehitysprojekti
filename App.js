@@ -13,6 +13,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import { useAuth, AuthProvider } from "./context/AuthContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
@@ -44,6 +45,7 @@ function AppNavigator() {
 
 export default function App() {
   return (
+
     <SafeAreaProvider>
       <AuthProvider>
         <NavigationContainer>
@@ -52,5 +54,6 @@ export default function App() {
         </NavigationContainer>
       </AuthProvider>
     </SafeAreaProvider>
+
   );
 }
