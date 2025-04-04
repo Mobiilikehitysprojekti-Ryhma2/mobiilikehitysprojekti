@@ -43,14 +43,14 @@ export default function ProfileScreen({ navigation }) {
   const updateUserInfo = async (updatedUser) => {
     const auth = getAuth();
     const user = auth.currentUser;
-  
+
     if (!user) {
       console.error("No authenticated user found");
       return;
     }
-  
+
     const userRef = doc(firestore, "users", user.uid);
-    
+
     try {
       await setDoc(userRef, updatedUser);
       console.log("User info updated successfully");
@@ -59,7 +59,7 @@ export default function ProfileScreen({ navigation }) {
       console.error("Error updating user info:", error);
     }
   };
-  
+
   return (
     <View style={styles.container}>
 
@@ -92,19 +92,19 @@ export default function ProfileScreen({ navigation }) {
         style={styles.profileImage}
       />
 
-      {currentUser ? ( <>
-            <InfoEditor
-              info={currentUser.userName}
-              toUpdate={"userName"}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              updateUserInfo={updateUserInfo}
-              isUserName={true}
-            />
-            </>
-      ) : (
-        <Text style={styles.username}>Ei käyttäjänimeä</Text>
-      )}
+        {currentUser ? (<>
+          <InfoEditor
+            info={currentUser.username}
+            toUpdate={"username"}
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
+            updateUserInfo={updateUserInfo}
+            isUserName={true}
+          />
+        </>
+        ) : (
+          <Text style={styles.username}>Ei käyttäjänimeä</Text>
+        )}
 
       <View style={styles.contentContainer}>
 
