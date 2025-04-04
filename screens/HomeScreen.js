@@ -60,6 +60,7 @@ export default function HomeScreen({ navigation }) {
           timeInterval: 1000,
 
         },
+
         async (newLocation) => {
           setLocation(newLocation.coords);
           try {
@@ -130,6 +131,7 @@ export default function HomeScreen({ navigation }) {
     setIsAppOptionsModalVisible(false);
     setIsRoutefinderModalVisible(true);
     loadWalkedRoute() //testi testi poistoon myöhemmin
+
   };
 
   const toggleAppOptions = () => {
