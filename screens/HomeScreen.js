@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image, Button, SafeAreaView, Modal } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, Button, Modal, StatusBar } from "react-native";
 import { useEffect, useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView, { Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
-import {Marker, Polyline } from 'react-native-maps';
+import { Marker, Polyline } from 'react-native-maps';
 import { FAB } from 'react-native-paper';
 import RoutefinderModal from "../components/RoutefinderModal";
 import { getDistance } from 'geolib';
@@ -19,125 +19,125 @@ export default function HomeScreen({ navigation }) {
   const [markers, setMarkers] = useState([]);
   //const origin = {latitude: 65.03439, longitude: 25.2803};
 
- // const destination = {latitude: 65.0345, longitude: 25.2851};
- const [isAppOptionsModalVisible, setIsAppOptionsModalVisible] = useState(false);
- const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
- const [polylineCoordinates, setPolylineCoordinates] = useState([]);
- const mapRef = useRef(null);
- const PROXIMITY_THRESHOLD = 50; //metriä 
- const [isModalVisible, setIsModalVisible] = useState(false);
- const [selectedMarker, setSelectedMarker] = useState(null);
- const [showAppOptions, setShowAppOptions] = useState(false);
- const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
- const [mapType, setMapType] = useState("hybrid");
-  
+  // const destination = {latitude: 65.0345, longitude: 25.2851};
+  const [isAppOptionsModalVisible, setIsAppOptionsModalVisible] = useState(false);
+  const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
+  const [polylineCoordinates, setPolylineCoordinates] = useState([]);
+  const mapRef = useRef(null);
+  const PROXIMITY_THRESHOLD = 50; //metriä 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showAppOptions, setShowAppOptions] = useState(false);
+  const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
+  const [mapType, setMapType] = useState("hybrid");
+
   const [location, setLocation] = useState({
-      latitude: 65.0100,
-      longitude: 25.4719,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    })
-     
-    
-    const zoomRange = {
-      minCenterCoordinateDistance: 30, 
-      maxCenterCoordinateDistance: 100, 
-      animated: true, 
-    };
+    latitude: 65.0100,
+    longitude: 25.4719,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  })
 
-        useEffect(() => {
-          (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-              setErrorMsg('Permission to access location was denied');
-              return;
-            }
-            
-          
-            const locationCheck = await Location.watchPositionAsync(
-              {
-                accuracy: Location.Accuracy.High, 
-                timeInterval: 1000, 
 
-              },
-              (newLocation) => {
-                setLocation(newLocation.coords);
-                markers.forEach((marker) => {
-                  const distance = getDistance(
-                    
-                    { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
-                    { latitude: marker.latitude, longitude: marker.longitude }
-                  );
-      
-                  if (distance < PROXIMITY_THRESHOLD) {
-                    console.log(markers)
-                    setSelectedMarker(marker);
-                    setIsModalVisible(true);
-                  }
-                });
+  const zoomRange = {
+    minCenterCoordinateDistance: 30,
+    maxCenterCoordinateDistance: 100,
+    animated: true,
+  };
 
-                if (mapRef.current) {
-                  mapRef.current.animateCamera({
-                    center: {
-                      latitude: newLocation.coords.latitude,
-                      longitude: newLocation.coords.longitude,
-                    },
-                    pitch: 90,
-                    heading: 0,
-                    zoom: 50,
-                  },
-                  zoomRange
-                 )
-                }
-              }
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+
+      const locationCheck = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 1000,
+
+        },
+        (newLocation) => {
+          setLocation(newLocation.coords);
+          markers.forEach((marker) => {
+            const distance = getDistance(
+
+              { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
+              { latitude: marker.latitude, longitude: marker.longitude }
             );
-            return () => locationCheck.remove();
-          })();
-        }, [markers]);
-  
 
-        const handleLongPress = (e) => {
-          const coordinate = e.nativeEvent.coordinate;
-          const id = uuid.v4()
-          setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-          ]);
-        };
+            if (distance < PROXIMITY_THRESHOLD) {
+              console.log(markers)
+              setSelectedMarker(marker);
+              setIsModalVisible(true);
+            }
+          });
 
-        const onReset = () => {
-          setMarkers([]);
-          setPolylineCoordinates([]);
+          if (mapRef.current) {
+            mapRef.current.animateCamera({
+              center: {
+                latitude: newLocation.coords.latitude,
+                longitude: newLocation.coords.longitude,
+              },
+              pitch: 90,
+              heading: 0,
+              zoom: 50,
+            },
+              zoomRange
+            )
+          }
+        }
+      );
+      return () => locationCheck.remove();
+    })();
+  }, [markers]);
 
-        };
-        const handleModalClose = () => {
-          setIsModalVisible(false);
-      
-        };
+
+  const handleLongPress = (e) => {
+    const coordinate = e.nativeEvent.coordinate;
+    const id = uuid.v4()
+    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
+    ]);
+  };
+
+  const onReset = () => {
+    setMarkers([]);
+    setPolylineCoordinates([]);
+
+  };
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+
+  };
 
 
-        const openRoutefinderModal = () => {
-          setIsAppOptionsModalVisible(false); 
-          setIsRoutefinderModalVisible(true);
-        };
+  const openRoutefinderModal = () => {
+    setIsAppOptionsModalVisible(false);
+    setIsRoutefinderModalVisible(true);
+  };
 
-        const toggleAppOptions = () => {
-          setShowAppOptions(prevState => !prevState);
-        };
-        const openAppOptionsModal = () => {
-          setShowAppOptions(true);
-        };
-     
+  const toggleAppOptions = () => {
+    setShowAppOptions(prevState => !prevState);
+  };
+  const openAppOptionsModal = () => {
+    setShowAppOptions(true);
+  };
 
-        const Matkatesti = () => {
-        
-          setPolylineCoordinates([
-            { latitude: 65.06254, longitude: 25.46997 },
-            { latitude: 65.06293, longitude: 25.46756 },
-            { latitude: 65.06464, longitude: 25.46799 },
-            { latitude: 65.06462, longitude: 25.47168 },
-            { latitude: 65.06424, longitude: 25.47498 },
-            { latitude: 65.06282, longitude: 25.47494 },
-          ]);
-        };
+
+  const Matkatesti = () => {
+
+    setPolylineCoordinates([
+      { latitude: 65.06254, longitude: 25.46997 },
+      { latitude: 65.06293, longitude: 25.46756 },
+      { latitude: 65.06464, longitude: 25.46799 },
+      { latitude: 65.06462, longitude: 25.47168 },
+      { latitude: 65.06424, longitude: 25.47498 },
+      { latitude: 65.06282, longitude: 25.47494 },
+    ]);
+  };
 
   return (
 
@@ -183,16 +183,16 @@ export default function HomeScreen({ navigation }) {
         >
           <Image source={require('../images/marker.png')} style={{ height: 40, width: 40 }} />
 
-</Marker>
-{markers.map((item, index) => (
+        </Marker>
+        {markers.map((item, index) => (
 
           <Marker
-          key={item.id}
-          title={"Marker " + index}
-          coordinate={{
-            latitude: item.latitude,
-            longitude: item.longitude
-          }}
+            key={item.id}
+            title={"Marker " + index}
+            coordinate={{
+              latitude: item.latitude,
+              longitude: item.longitude
+            }}
           />
 
 
@@ -211,17 +211,17 @@ export default function HomeScreen({ navigation }) {
             coordinates={[
               { latitude: location.latitude, longitude: location.longitude },
               ...markers.map((marker) => ({
-                latitude: marker.coordinate.latitude,
-                longitude: marker.coordinate.longitude,
+                latitude: marker.latitude,
+                longitude: marker.longitude,
               })),
             ]}
             strokeColor="red"
             strokeWidth={6}
           />
         )}
-        
-</MapView>
-<Modal
+
+      </MapView>
+      <Modal
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
@@ -239,28 +239,28 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-<Button
+      <Button
         title="Show Options"
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
       />
-{isAppOptionsModalVisible && (
+      {isAppOptionsModalVisible && (
 
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Button title="Reset" onPress={onReset} />
             <Button title="Reitti" onPress={openRoutefinderModal} />
             <Button title="kuljettumatkatesti" onPress={Matkatesti} />
-     
+
           </View>
         </View>
       )}
-       <RoutefinderModal
+      <RoutefinderModal
         visible={isRoutefinderModalVisible}
         closeModal={() => setIsRoutefinderModalVisible(false)}
         markers={markers}
         setMarkers={setMarkers}
-      />  
-   
+      />
+
       <MapSettingsModal
         modalVisible={mapSettingsModalVisible}
         setModalVisible={setMapSettingsModalVisible}
