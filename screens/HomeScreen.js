@@ -11,7 +11,7 @@ import { getDistance } from 'geolib';
 import uuid from "react-native-uuid"
 import TopAppBar from "../components/TopAppBar";
 import MapSettingsModal from "../components/MapSettingsModal";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
@@ -60,8 +60,21 @@ export default function HomeScreen({ navigation }) {
           timeInterval: 1000,
 
         },
-        (newLocation) => {
+
+        async (newLocation) => {
           setLocation(newLocation.coords);
+          try {
+            const storedLocations = await AsyncStorage.getItem('walkedRoute');
+            const locations = storedLocations ? JSON.parse(storedLocations) : [];
+            locations.push({
+              latitude: newLocation.coords.latitude,
+              longitude: newLocation.coords.longitude,
+              timestamp: newLocation.timestamp,
+            });
+            await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
+          } catch (error) {
+            console.error('Error', error);
+          }
           markers.forEach((marker) => {
             const distance = getDistance(
 
@@ -117,6 +130,8 @@ export default function HomeScreen({ navigation }) {
   const openRoutefinderModal = () => {
     setIsAppOptionsModalVisible(false);
     setIsRoutefinderModalVisible(true);
+    loadWalkedRoute() //testi testi poistoon myöhemmin
+
   };
 
   const toggleAppOptions = () => {
@@ -125,6 +140,19 @@ export default function HomeScreen({ navigation }) {
   const openAppOptionsModal = () => {
     setShowAppOptions(true);
   };
+
+  const loadWalkedRoute = async () => {
+    try {
+      const storedLocations = await AsyncStorage.getItem('userLocations');
+      const locations = storedLocations ? JSON.parse(storedLocations) : [];
+      console.log(locations);
+      return locations; // 
+    } catch (error) {
+      console.error('Error fetching locations from AsyncStorage', error);
+      return [];
+    }
+  };
+
 
 
   const Matkatesti = () => {
