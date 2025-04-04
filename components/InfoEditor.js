@@ -13,9 +13,9 @@ export default function InfoEditor(props) {
 
   const toUpdate = props.toUpdate
   const currentUser = props.currentUser
+  const displayInfo = props.info || props.toUpdate
 
   const handleConfirm = async () => {
-    console.log("handleConfirm triggered");
   
     const updatedUser = { ...currentUser, [toUpdate]: newInfo };
     props.setCurrentUser(updatedUser);
@@ -47,7 +47,7 @@ export default function InfoEditor(props) {
         }}>
           {props.isUserName ? (<Text style={styles.username}>{props.info}</Text>
           ) : (
-            <Text style={styles.userInfo}>{props.info}</Text>
+            <Text style={styles.userInfo}>{displayInfo}</Text>
           )}
         </TouchableOpacity>
       </>
