@@ -62,19 +62,11 @@ export default function HomeScreen({ navigation }) {
         },
 
         async (newLocation) => {
+         // console.log('New Location:', newLocation);
           setLocation(newLocation.coords);
-          try {
-            const storedLocations = await AsyncStorage.getItem('walkedRoute');
-            const locations = storedLocations ? JSON.parse(storedLocations) : [];
-            locations.push({
-              latitude: newLocation.coords.latitude,
-              longitude: newLocation.coords.longitude,
-              timestamp: newLocation.timestamp,
-            });
-            await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
-          } catch (error) {
-            console.error('Error', error);
-          }
+          await saveLocationToAsyncStorage(newLocation);
+
+
           markers.forEach((marker) => {
             const distance = getDistance(
 
@@ -83,7 +75,7 @@ export default function HomeScreen({ navigation }) {
             );
 
             if (distance < PROXIMITY_THRESHOLD) {
-              console.log(markers)
+              console.log(markers,"markerlöytynyt")
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
@@ -107,6 +99,24 @@ export default function HomeScreen({ navigation }) {
       return () => locationCheck.remove();
     })();
   }, [markers]);
+
+  const saveLocationToAsyncStorage = async (newLocation) => {
+    try {
+      const storedLocations = await AsyncStorage.getItem('walkedRoute');
+      const locations = storedLocations ? JSON.parse(storedLocations) : [];
+      const newLocationData = {
+        latitude: newLocation.coords.latitude,
+        longitude: newLocation.coords.longitude,
+        timestamp: newLocation.timestamp,
+      };
+      locations.push(newLocationData);
+      console.log('array', locations);
+      await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
+    } catch (error) {
+      console.error('Error catch', error);
+    }
+  };
+
 
 
   const handleLongPress = (e) => {
@@ -143,12 +153,12 @@ export default function HomeScreen({ navigation }) {
 
   const loadWalkedRoute = async () => {
     try {
-      const storedLocations = await AsyncStorage.getItem('userLocations');
+      const storedLocations = await AsyncStorage.getItem('walkedRoute');
       const locations = storedLocations ? JSON.parse(storedLocations) : [];
       console.log(locations);
       return locations; // 
     } catch (error) {
-      console.error('Error fetching locations from AsyncStorage', error);
+      console.error('Error', error);
       return [];
     }
   };

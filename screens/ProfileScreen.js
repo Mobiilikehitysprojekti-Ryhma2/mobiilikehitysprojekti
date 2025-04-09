@@ -84,6 +84,12 @@ export default function ProfileScreen({ navigation }) {
           color={Colors.primary}
           onPress={() => navigation.navigate('Settings')}
         />
+        <Ionicons
+          name="alert"
+          size={40}
+          color={Colors.primary}
+          onPress={() => navigation.navigate('Data')}
+        />
 
       </View>
 
