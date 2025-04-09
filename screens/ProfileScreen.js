@@ -52,9 +52,9 @@ export default function ProfileScreen({ navigation }) {
     const userRef = doc(firestore, "users", user.uid);
 
     try {
-      await setDoc(userRef, updatedUser);
+      await setDoc(userRef, updatedUser, { merge: true }); // Use merge to avoid overwriting
       console.log("User info updated successfully");
-      getUserInfo()
+      getUserInfo();
     } catch (error) {
       console.error("Error updating user info:", error);
     }
@@ -98,57 +98,60 @@ export default function ProfileScreen({ navigation }) {
         style={styles.profileImage}
       />
 
-        {currentUser ? (<>
-          <InfoEditor
-            info={currentUser.username}
-            toUpdate={"username"}
-            currentUser={currentUser}
-            setCurrentUser={setCurrentUser}
-            updateUserInfo={updateUserInfo}
-            isUserName={true}
-          />
-        </>
-        ) : (
-          <Text style={styles.username}>Ei käyttäjänimeä</Text>
-        )}
+      <View style={styles.username}>
+        <InfoEditor
+          info={currentUser.username}
+          toUpdate={"username"}
+          currentUser={currentUser}
+          setCurrentUser={setCurrentUser}
+          updateUserInfo={updateUserInfo}
+          isUserName={true}
+        />
+      </View>
 
       <View style={styles.contentContainer}>
-
         {currentUser ? (
           <>
-            <InfoEditor
-              info={currentUser.fullName}
-              toUpdate={"fullName"}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              updateUserInfo={updateUserInfo}
-            />
-            <InfoEditor
-              info={currentUser.bio}
-              toUpdate={"bio"}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              updateUserInfo={updateUserInfo}
-            />
-            <InfoEditor
-              info={currentUser.country}
-              toUpdate={"country"}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-              updateUserInfo={updateUserInfo}
-            />
+
+            <View style={styles.userInfo}>
+
+              <Text style={styles.userInfoText}>Nimi</Text>
+              <InfoEditor
+                info={currentUser.fullName}
+                toUpdate={"fullName"}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                updateUserInfo={updateUserInfo}
+              />
+              <Text style={styles.userInfoText}>Bio</Text>
+              <InfoEditor
+                info={currentUser.bio}
+                toUpdate={"bio"}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                updateUserInfo={updateUserInfo}
+              />
+              <Text style={styles.userInfoText}>Maa</Text>
+              <InfoEditor
+                info={currentUser.country}
+                toUpdate={"country"}
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                updateUserInfo={updateUserInfo}
+              />
+              <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
+            </View>
           </>
         ) : (
           <>
-            <Text style={styles.userInfo}>Tietoja ei löydy</Text>
+            <Text style={styles.userInfoText}>Tietoja ei löydy</Text>
           </>
         )
 
         }
-
-        <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
-
       </View>
+
+
 
     </View>
   );
@@ -182,18 +185,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     zIndex: 10
   },
-  userInfo: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginVertical: 10,
-    color: "white"
-  },
   username: {
-    fontSize: 40,
-    color: Colors.primary,
-    marginTop: 340,
-    textAlign: "center",
-
+    position: "absolute",
+    top: 320,
   },
   profileToolBar: {
     position: "absolute",
@@ -207,5 +201,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 60,
     left: 18,
+  },
+  userInfo: {
+    width: "90%",
+    position: "absolute",
+    bottom: 40
+  },
+  userInfoText: {
+    fontSize: 18,
+    textAlign: 'left',
+    marginVertical: 10,
+    color: "white"
   }
 });

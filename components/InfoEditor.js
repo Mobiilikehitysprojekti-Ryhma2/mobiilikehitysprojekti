@@ -16,27 +16,26 @@ export default function InfoEditor(props) {
   const displayInfo = props.info || props.toUpdate
 
   const handleConfirm = async () => {
-  
-    const updatedUser = { ...currentUser, [toUpdate]: newInfo };
-    props.setCurrentUser(updatedUser);
-    
-    await props.updateUserInfo(updatedUser);
-    
+    if (newInfo !== "") { // Allow updates when newInfo is not empty
+      const updatedUser = { ...currentUser, [toUpdate]: newInfo };
+      props.setCurrentUser(updatedUser);
+      await props.updateUserInfo(updatedUser);
+    }
     setIsEditing(false);
   };
 
   return (
 
     isEditing ? (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center'}}>
         <TextInput
           placeholder={props.info}
           value={newInfo}
           onChangeText={text => setNewInfo(text)}
-          style={{ flex: 1, borderBottomWidth: 1, paddingHorizontal: 8 }}
+          style={styles.input}
         />
         <TouchableOpacity onPress={handleConfirm}>
-          <Ionicons name="checkmark-circle-outline" size={30} color={Colors.primary} backgroundColor="black" />
+          <Ionicons name="checkmark-circle-outline" size={40} backgroundColor={Colors.secondaryContainer}/>
         </TouchableOpacity>
       </View>
     ) : (
@@ -66,8 +65,13 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 40,
     color: Colors.primary,
-    marginTop: 340,
-    textAlign: "center",
-
   },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    fontSize: 16,
+    padding: 5,
+    color: "black",
+    width: "90%",
+  }
 });
