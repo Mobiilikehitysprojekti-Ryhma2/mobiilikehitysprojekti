@@ -25,12 +25,16 @@ export default function HomeScreen({ navigation }) {
   const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
   const [polylineCoordinates, setPolylineCoordinates] = useState([]);
   const mapRef = useRef(null);
+  const markersRef = useRef([]);
   const PROXIMITY_THRESHOLD = 50; //metriä 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showAppOptions, setShowAppOptions] = useState(false);
   const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
   const [mapType, setMapType] = useState("hybrid");
+
+
+
 
   const [location, setLocation] = useState({
     latitude: 65.0100,
@@ -47,6 +51,10 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
+    markersRef.current = markers;
+  }, [markers]);
+
+  useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -59,25 +67,19 @@ export default function HomeScreen({ navigation }) {
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 1000,
-
         },
-
         async (newLocation) => {
-         // console.log('New Location:', newLocation);
           setLocation(newLocation.coords);
           await saveLocationToAsyncStorage(newLocation);
 
-
-          markers.forEach((marker) => {
+          markersRef.current.forEach((marker) => {
             const distance = getDistance(
-
               { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
               { latitude: marker.latitude, longitude: marker.longitude }
             );
 
             if (distance < PROXIMITY_THRESHOLD) {
-              //console.log("markerlöytynyt")
-              handleFoundMarker(marker)
+              handleFoundMarker(marker);
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
@@ -92,12 +94,11 @@ export default function HomeScreen({ navigation }) {
               pitch: 90,
               heading: 0,
               zoom: 50,
-            },
-              zoomRange
-            )
+            }, zoomRange);
           }
         }
       );
+
       return () => locationCheck.remove();
     })();
   }, []);
