@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [camera, setCamera] = useState('')
   const [markers, setMarkers] = useState([]);
+  const [finishedMarkers, setFinishedMarkers] = useState([])
   //const origin = {latitude: 65.03439, longitude: 25.2803};
 
   // const destination = {latitude: 65.0345, longitude: 25.2851};
@@ -75,7 +76,8 @@ export default function HomeScreen({ navigation }) {
             );
 
             if (distance < PROXIMITY_THRESHOLD) {
-              console.log(markers,"markerlöytynyt")
+              //console.log("markerlöytynyt")
+              handleFoundMarker(marker)
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
@@ -98,7 +100,7 @@ export default function HomeScreen({ navigation }) {
       );
       return () => locationCheck.remove();
     })();
-  }, [markers]);
+  }, []);
 
   const saveLocationToAsyncStorage = async (newLocation) => {
     try {
@@ -110,13 +112,19 @@ export default function HomeScreen({ navigation }) {
         timestamp: newLocation.timestamp,
       };
       locations.push(newLocationData);
-      console.log('array', locations);
+      //console.log('array', locations);
       await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
     } catch (error) {
       console.error('Error catch', error);
     }
   };
 
+  const handleFoundMarker = (foundMarker) => {
+    console.log("handleFoundMarker", foundMarker)
+    setFinishedMarkers([...finishedMarkers, { id: foundMarker.id, latitude: foundMarker.latitude, longitude: foundMarker.longitude }])
+    setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== foundMarker.id));
+    console.log("new markers set:", finishedMarkers, markers)
+  }
 
 
   const handleLongPress = (e) => {
@@ -186,6 +194,8 @@ export default function HomeScreen({ navigation }) {
         setModalVisible={setMapSettingsModalVisible}
         markers={markers}
         location={location}
+        finishedMarkers={finishedMarkers}
+        setFinishedMarkers={setFinishedMarkers}
       />
       <MapView
         style={{ flex: 1 }}
@@ -235,6 +245,21 @@ export default function HomeScreen({ navigation }) {
 
 
         ))}
+
+        {/* Finished markers */}
+        {finishedMarkers.map((item, index) => (
+          <Marker
+            key={item.id}
+            title={"Marker " + index}
+            pinColor="#7cfc00"
+            coordinate={{
+              latitude: item.latitude,
+              longitude: item.longitude
+            }}
+          />
+        ))}
+
+
         {polylineCoordinates.length > 0 && (
           <Polyline
             coordinates={polylineCoordinates}
