@@ -15,6 +15,8 @@ import FriendsScreen from "./screens/FriendsScreen";
 import SearchUsersScreen from "./screens/SearchUsersScreen";
 import ChatScreen from "./screens/ChatScreen"
 import RecentCommentsScreen from "./screens/RecentCommentsScreen";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AvatarScreen from "./screens/AvatarScreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +28,7 @@ function AppNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        orientation: "portrait",
       }}
     >
       {!user ? (
@@ -44,7 +47,7 @@ function AppNavigator() {
           <Stack.Screen name="Search Users" component={SearchUsersScreen} />
           <Stack.Screen name="Chat" component={ChatScreen} />
           <Stack.Screen name="Recent Comments" component={RecentCommentsScreen} />
-        </Stack.Navigator>
+          <Stack.Screen name="Avatar" component={AvatarScreen} />
         </>
       )}
     </Stack.Navigator>
@@ -53,11 +56,15 @@ function AppNavigator() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <NavigationContainer>
-        <StatusBar backgroundColor={Colors.onPrimaryFixed} />
-        <AppNavigator />
-      </NavigationContainer>
-    </AuthProvider>
+
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar backgroundColor={Colors.onPrimaryFixed} />
+          <AppNavigator />
+        </NavigationContainer>
+      </AuthProvider>
+    </SafeAreaProvider>
+
   );
 }
