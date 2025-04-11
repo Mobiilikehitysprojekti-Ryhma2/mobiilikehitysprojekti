@@ -13,8 +13,18 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, deleteUser } from "firebase/auth";
-import Constants from 'expo-constants';
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  deleteUser,
+  initializeAuth, 
+  getReactNativePersistence
+} from "firebase/auth";
+import Constants from "expo-constants";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: Constants.expoConfig.extra.firebaseApiKey,
@@ -25,7 +35,12 @@ const firebaseConfig = {
   appId: Constants.expoConfig.extra.firebaseAppId,
 };
 
-initializeApp(firebaseConfig);
+// Initialize Firebase
+app = initializeApp(firebaseConfig);
+
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 
 const firestore = getFirestore();
 
@@ -34,8 +49,8 @@ const MESSAGES = "messages"
 const USERINFO = "userInfo"
 //*****
 
-
 export {
+  auth,
   firestore,
   MESSAGES,
   USERINFO,
@@ -50,10 +65,10 @@ export {
   query,
   onSnapshot,
   orderBy,
-  getAuth, 
+  getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged, 
-  createUserWithEmailAndPassword, 
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
   signOut,
-  deleteUser
+  deleteUser,
 };
