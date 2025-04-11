@@ -11,7 +11,7 @@ import { getDistance } from 'geolib';
 import uuid from "react-native-uuid"
 import TopAppBar from "../components/TopAppBar";
 import MapSettingsModal from "../components/MapSettingsModal";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
@@ -60,8 +60,13 @@ export default function HomeScreen({ navigation }) {
           timeInterval: 1000,
 
         },
-        (newLocation) => {
+
+        async (newLocation) => {
+         // console.log('New Location:', newLocation);
           setLocation(newLocation.coords);
+          await saveLocationToAsyncStorage(newLocation);
+
+
           markers.forEach((marker) => {
             const distance = getDistance(
 
@@ -70,7 +75,7 @@ export default function HomeScreen({ navigation }) {
             );
 
             if (distance < PROXIMITY_THRESHOLD) {
-              console.log(markers)
+              console.log(markers,"markerlöytynyt")
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
@@ -95,6 +100,24 @@ export default function HomeScreen({ navigation }) {
     })();
   }, [markers]);
 
+  const saveLocationToAsyncStorage = async (newLocation) => {
+    try {
+      const storedLocations = await AsyncStorage.getItem('walkedRoute');
+      const locations = storedLocations ? JSON.parse(storedLocations) : [];
+      const newLocationData = {
+        latitude: newLocation.coords.latitude,
+        longitude: newLocation.coords.longitude,
+        timestamp: newLocation.timestamp,
+      };
+      locations.push(newLocationData);
+      console.log('array', locations);
+      await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
+    } catch (error) {
+      console.error('Error catch', error);
+    }
+  };
+
+
 
   const handleLongPress = (e) => {
     const coordinate = e.nativeEvent.coordinate;
@@ -117,6 +140,8 @@ export default function HomeScreen({ navigation }) {
   const openRoutefinderModal = () => {
     setIsAppOptionsModalVisible(false);
     setIsRoutefinderModalVisible(true);
+    loadWalkedRoute() //testi testi poistoon myöhemmin
+
   };
 
   const toggleAppOptions = () => {
@@ -125,6 +150,19 @@ export default function HomeScreen({ navigation }) {
   const openAppOptionsModal = () => {
     setShowAppOptions(true);
   };
+
+  const loadWalkedRoute = async () => {
+    try {
+      const storedLocations = await AsyncStorage.getItem('walkedRoute');
+      const locations = storedLocations ? JSON.parse(storedLocations) : [];
+      console.log(locations);
+      return locations; // 
+    } catch (error) {
+      console.error('Error', error);
+      return [];
+    }
+  };
+
 
 
   const Matkatesti = () => {

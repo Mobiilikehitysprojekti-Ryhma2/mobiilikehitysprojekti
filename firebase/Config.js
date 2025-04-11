@@ -4,6 +4,7 @@ import {
   collection,
   addDoc,
   setDoc,
+  getDoc,
   deleteDoc,
   doc,
   updateDoc,
@@ -44,16 +45,19 @@ const auth = initializeAuth(app, {
 const firestore = getFirestore();
 
 // Firebase testing *****
-const MESSAGES = "messages";
+const MESSAGES = "messages"
+const USERINFO = "userInfo"
 //*****
 
 export {
   auth,
   firestore,
   MESSAGES,
+  USERINFO,
   collection,
   addDoc,
   setDoc,
+  getDoc,
   deleteDoc,
   doc,
   updateDoc,
