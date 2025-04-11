@@ -24,6 +24,7 @@ function AppNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        orientation: "portrait",
       }}
     >
       {!user ? (

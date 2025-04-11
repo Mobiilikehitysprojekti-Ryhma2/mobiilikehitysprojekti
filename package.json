@@ -40,6 +40,7 @@
     "react-native-web": "~0.19.13",
     "uuid": "^11.1.0",
     "expo-camera": "~16.0.18"
+    "expo-screen-orientation": "~8.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
