@@ -1,10 +1,22 @@
 import { View, Text, Button, Modal, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import uuid from "react-native-uuid"
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  deleteUser,
+  createUserWithEmailAndPassword,
+  setDoc,
+  doc,
+  firestore,
+  deleteDoc,
+} from "../firebase/Config";
 
 const RoutefinderModal = ({ visible, closeModal, markers, setMarkers }) => {
   
-//tänne kohteiden haku backendistä kun saadaan päätettyä backendin malli
+
 
 const fetchMarkers = () => {
  
@@ -16,21 +28,47 @@ const fetchMarkers = () => {
 }
 // 
 
-const FetchHardMarkers = () => {
-  const coordinate = {latitude: 65.06254, longitude: 24.56997};
-  const id = uuid.v4()
-  setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-  ]);
+const FetchHardMarkers = async () => {
+  try {
+    const markersCollectionRef = firestore().collection('markers');
+    const snapshot = await markersCollectionRef.get();
 
+    const fetchedMarkers = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(), 
+    }));
 
+    //console.log('Markers:', fetchedMarkers);
+    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
+    ]);
+
+    return fetchedMarkers;
+  } catch (error) {
+    console.error("Error markers:", error);
+    return [];
+  }
 }
 
-const FetchMediumMarkers = () => {
+const FetchMediumMarkers = async () => {
+  try {
+    const markersCollectionRef = firestore().collection('markers');
+    const snapshot = await markersCollectionRef.get();
 
-  const coordinate = {latitude: 65.06254, longitude: 25.56997};
-  const id = uuid.v4()
-  setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-  ]);
+    const fetchedMarkers = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(), 
+    }));
+
+    //console.log('Markers:', fetchedMarkers);
+    
+    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
+    ]);
+
+    return fetchedMarkers;
+  } catch (error) {
+    console.error("Error markers:", error);
+    return [];
+  }
 
 }
 
