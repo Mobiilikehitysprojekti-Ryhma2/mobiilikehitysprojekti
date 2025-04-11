@@ -67,8 +67,5 @@ export {
   orderBy,
   getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signOut,
   deleteUser,
 };

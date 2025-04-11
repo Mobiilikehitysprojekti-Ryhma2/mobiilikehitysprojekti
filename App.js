@@ -10,7 +10,11 @@ import { Colors } from "./theme/colors";
 import { StatusBar } from "expo-status-bar";
 import DataScreen from "./screens/DataScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import { useAuth, AuthProvider } from "./context/AuthContext";
+import { useAuth,AuthProvider } from "./context/AuthContext";
+import FriendsScreen from "./screens/FriendsScreen";
+import SearchUsersScreen from "./screens/SearchUsersScreen";
+import ChatScreen from "./screens/ChatScreen"
+import RecentCommentsScreen from "./screens/RecentCommentsScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AvatarScreen from "./screens/AvatarScreen";
 
@@ -39,6 +43,10 @@ function AppNavigator() {
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="Data" component={DataScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Friends" component={FriendsScreen} />
+          <Stack.Screen name="Search Users" component={SearchUsersScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen} />
+          <Stack.Screen name="Recent Comments" component={RecentCommentsScreen} />
           <Stack.Screen name="Avatar" component={AvatarScreen} />
         </>
       )}
