@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -12,33 +11,50 @@ import {
 } from "react-native";
 import { Colors } from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  firestore,
+  MESSAGES,
+  addDoc,
+  collection,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy,
+} from "../firebase/Config";
+import { convertFirebaseTimeStampToJS } from "../helper/Functions";
 
 export default function ChatScreen({ navigation, route }) {
   const { user } = route.params; //User information from the previous page
-
-  const [messages, setMessages] = useState([
-    { id: "1", text: "Moi! Miten menee?", sender: "user" },
-    { id: "2", text: "Hyvin, entä sinulla?", sender: "me" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const flatListRef = useRef(null);
+  const scrollViewRef = useRef();
 
-  const sendMessage = () => {
-    if (newMessage.trim() !== "") {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { id: Date.now().toString(), text: newMessage, sender: "me" },
-      ]);
-      setNewMessage("");
-    }
+  const save = async () => {
+    const docRef = await addDoc(collection(firestore, MESSAGES), {
+      text: newMessage,
+      created: serverTimestamp(),
+      sender: "me",
+    }).catch((error) => console.log(error));
+    setNewMessage("");
   };
 
-  //Automatic scrolling to the last message
   useEffect(() => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
-    }
-  }, [messages]);
+    const q = query(collection(firestore, MESSAGES), orderBy("created", "asc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const tempMessages = [];
+      querySnapshot.forEach((doc) => {
+        tempMessages.push({
+          ...doc.data(),
+          id: doc.id,
+          created: convertFirebaseTimeStampToJS(doc.data().created),
+        });
+      });
+      setMessages(tempMessages);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -51,30 +67,39 @@ export default function ChatScreen({ navigation, route }) {
         </TouchableOpacity>
         <Text style={styles.headerText}>{user.name}</Text>
       </View>
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+      <ScrollView
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({ Animated: true })
+        }
+      >
+        {messages.map((message) => (
           <View
+            key={message.id}
             style={[
               styles.messageBubble,
-              item.sender === "me" ? styles.myMessage : styles.otherMessage,
+              message.sender === "me" ? styles.myMessage : styles.otherMessage,
             ]}
           >
-            <Text style={styles.messageText}>{item.text}</Text>
+            <Text>{message.text}</Text>
+            <Text style={styles.messageInfo}>{message.created}</Text>
           </View>
-        )}
-      />
+        ))}
+      </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           value={newMessage}
-          onChangeText={setNewMessage}
+          onChangeText={(text) => setNewMessage(text)}
           placeholder="Kirjoita viesti..."
           placeholderTextColor="#aaa"
         />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+        <TouchableOpacity
+          style={styles.sendButton}
+          onPress={() => {
+            save();
+          }}
+        >
           <Ionicons name="send" size={28} color="white" />
         </TouchableOpacity>
       </View>
@@ -130,16 +155,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
   },
+  messageInfo: {
+    fontSize: 12,
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
     borderTop: 16,
     borderColor: "#aaa",
-    shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
   },
   input: {
     flex: 1,
