@@ -10,7 +10,6 @@ import { Colors } from "../theme/colors";
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
-
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
