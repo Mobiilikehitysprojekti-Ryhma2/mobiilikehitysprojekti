@@ -22,13 +22,20 @@ export default function SettingsScreen({ navigation }) {
         screenName={"ProfileSettings"}
         iconName={"person-outline"}
       />
-      <SettingButton title={"Tumma teema"} type={"switch"} iconName={"eye-outline"} />
+
+      <SettingButton
+        title={"Tumma teema"}
+        type={"switch"}
+        iconName={"eye-outline"}
+      />
+
       <SettingButton
         title={"Tilin yksityisyys"}
         type={"navigate"}
         screenName={"Profile"}
         iconName={"lock-closed-outline"}
       />
+      
       <SettingButton
         title={"Sijaintiasetukset"}
         type={"navigate"}

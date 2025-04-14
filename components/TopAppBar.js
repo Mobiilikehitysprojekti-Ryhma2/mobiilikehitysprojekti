@@ -8,7 +8,7 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
     const [distance, setDistance] = useState(0);
 
     useEffect(() => {
-        calculateDistance(); 
+        calculateDistance();
     }, [markers, location]);
 
     const removeAllMarkers = () => {
@@ -65,10 +65,15 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
 
     return (
         <Appbar.Header>
-            <Appbar.Action icon={"map-marker-remove-outline"} onPress={removeAllMarkers} />    
-            <Appbar.Action icon={"map"} onPress={removeFoundAllMarkers} />    
-            <Appbar.Action icon={"map-marker"} onPress={logMarkers} />    
+            <Appbar.Action icon={"map-marker-remove-outline"} onPress={removeAllMarkers} />
             <Appbar.Action icon={"cog"} onPress={toggleModal} />
+
+            {/*
+            Buttons for marker testing
+            <Appbar.Action icon={"map-marker"} onPress={logMarkers} />    
+            <Appbar.Action icon={"map"} onPress={removeFoundAllMarkers} />
+             */}
+             
             <Text style={styles.distanceMeter}>{distance.toFixed(2)} km</Text>
         </Appbar.Header>
     );

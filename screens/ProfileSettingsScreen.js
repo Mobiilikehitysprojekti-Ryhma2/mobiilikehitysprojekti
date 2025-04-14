@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/colors"
-import InfoEditor from '../components/InfoEditor'
 import { getUserInfo, updateUserInfo } from "../helpers/UserInfo";
+import InfoEditor from '../components/InfoEditor'
 
 export default function ProfileSettingsScreen({ navigation }) {
 
@@ -21,7 +22,12 @@ export default function ProfileSettingsScreen({ navigation }) {
     return (
         <View style={styles.container}>
 
-            <Text>Tilin asetukset</Text>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="chevron-back-outline" size={42} />
+                </TouchableOpacity>
+                <Text style={styles.headerText}>Tilin Asetukset</Text>
+            </View>
 
             <Text style={styles.userInfoText}>Muuta käytäjänimi:</Text>
             <InfoEditor
@@ -74,8 +80,21 @@ const styles = StyleSheet.create({
     userInfoText: {
         fontSize: 18,
         paddingLeft: 16,
-        paddingBottom: 16,
+        paddingTop: 32,
         textAlign: 'left',
         color: "black"
-      }
+    },
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 16,
+    },
+    headerText: {
+        flex: 1,
+        textAlign: "center",
+        fontSize: 40,
+        color: Colors.onPrimaryContainer,
+        fontFamily: "Exo_400Regular",
+    },
 });
