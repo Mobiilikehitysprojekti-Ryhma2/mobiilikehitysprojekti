@@ -44,10 +44,12 @@ const auth = initializeAuth(app, {
 
 const firestore = getFirestore();
 
+const MESSAGES = "messages"
 
 export {
   auth,
   firestore,
+  MESSAGES,
   collection,
   addDoc,
   setDoc,
