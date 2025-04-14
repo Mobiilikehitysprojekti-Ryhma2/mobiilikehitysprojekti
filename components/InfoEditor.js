@@ -27,7 +27,7 @@ export default function InfoEditor(props) {
   return (
 
     isEditing ? (
-      <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16}}>
         <TextInput
           placeholder={props.info}
           value={newInfo}
@@ -44,10 +44,9 @@ export default function InfoEditor(props) {
           setNewInfo(props.info)
           setIsEditing(true)
         }}>
-          {props.isUserName ? (<Text style={styles.username}>{props.info}</Text>
-          ) : (
+
             <Text style={styles.userInfo}>{displayInfo}</Text>
-          )}
+
         </TouchableOpacity>
       </>
     )
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginVertical: 10,
-    color: "white"
+    color: "black"
   },
   username: {
     fontSize: 40,

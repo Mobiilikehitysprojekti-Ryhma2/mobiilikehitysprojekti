@@ -13,6 +13,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import { useAuth, AuthProvider } from "./context/AuthContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AvatarScreen from "./screens/AvatarScreen";
+import ProfileSettingsScreen from "./screens/ProfileSettingsScreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -40,6 +41,8 @@ function AppNavigator() {
           <Stack.Screen name="Data" component={DataScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Avatar" component={AvatarScreen} />
+          <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} />
+
         </>
       )}
     </Stack.Navigator>
