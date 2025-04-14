@@ -7,6 +7,7 @@ import { TextInput } from "react-native-paper";
 import { addDoc, collection, firestore, getAuth, doc, setDoc, getDoc } from "../firebase/Config"
 import { useAuth } from "../context/AuthContext";
 import InfoEditor from "../components/InfoEditor";
+import { getUserInfo, updateUserInfo } from "../helpers/UserInfo";
 
 
 export default function ProfileScreen({ navigation }) {
@@ -14,51 +15,14 @@ export default function ProfileScreen({ navigation }) {
   const [currentUser, setCurrentUser] = useState({})
 
   useEffect(() => {
-    getUserInfo()
-  }, [])
+    const fetchUser = async () => {
+      const userData = await getUserInfo();
+      console.log(userData)
+      setCurrentUser(userData);
+    };
 
-  const getUserInfo = async () => {
-    try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      const userRef = doc(firestore, "users", user.uid)
-      const userSnap = await getDoc(userRef);
-      console.log("USER INFO", userSnap.data())
-      if (userSnap.exists()) {
-        console.log("User Data:", userSnap.data());
-        setCurrentUser(userSnap.data())
-      } else {
-        console.log("No user data found!");
-        return null;
-      }
-
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      return null;
-    }
-
-  }
-
-  const updateUserInfo = async (updatedUser) => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-      console.error("No authenticated user found");
-      return;
-    }
-
-    const userRef = doc(firestore, "users", user.uid);
-
-    try {
-      await setDoc(userRef, updatedUser, { merge: true }); // Use merge to avoid overwriting
-      console.log("User info updated successfully");
-      getUserInfo();
-    } catch (error) {
-      console.error("Error updating user info:", error);
-    }
-  };
+    fetchUser();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -90,7 +54,7 @@ export default function ProfileScreen({ navigation }) {
           color={Colors.primary}
           onPress={() => navigation.navigate('Data')}
         />
-<Ionicons
+        <Ionicons
           name="alert"
           size={40}
           color={Colors.primary}
@@ -121,29 +85,14 @@ export default function ProfileScreen({ navigation }) {
             <View style={styles.userInfo}>
 
               <Text style={styles.userInfoText}>Nimi</Text>
-              <InfoEditor
-                info={currentUser.fullName}
-                toUpdate={"fullName"}
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
-                updateUserInfo={updateUserInfo}
-              />
+              <Text style={styles.userInfoText}>{currentUser.fullName}</Text>
+
               <Text style={styles.userInfoText}>Bio</Text>
-              <InfoEditor
-                info={currentUser.bio}
-                toUpdate={"bio"}
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
-                updateUserInfo={updateUserInfo}
-              />
+              <Text style={styles.userInfoText}>{currentUser.bio}</Text>
+
               <Text style={styles.userInfoText}>Maa</Text>
-              <InfoEditor
-                info={currentUser.country}
-                toUpdate={"country"}
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
-                updateUserInfo={updateUserInfo}
-              />
+              <Text style={styles.userInfoText}>{currentUser.country}</Text>
+
               <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
             </View>
           </>

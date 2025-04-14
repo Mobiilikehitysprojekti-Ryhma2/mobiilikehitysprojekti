@@ -17,6 +17,7 @@ import ChatScreen from "./screens/ChatScreen"
 import RecentCommentsScreen from "./screens/RecentCommentsScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import AvatarScreen from "./screens/AvatarScreen";
+import ProfileSettingsScreen from "./screens/ProfileSettingsScreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -48,6 +49,8 @@ function AppNavigator() {
           <Stack.Screen name="Chat" component={ChatScreen} />
           <Stack.Screen name="Recent Comments" component={RecentCommentsScreen} />
           <Stack.Screen name="Avatar" component={AvatarScreen} />
+          <Stack.Screen name="ProfileSettings" component={ProfileSettingsScreen} />
+
         </>
       )}
     </Stack.Navigator>
