@@ -6,8 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("jee@jee.com");
-  const [password, setPassword] = useState("jee123");
+  const [email, setEmail] = useState("user1@hotmail.com");
+  const [password, setPassword] = useState("user123");
   const { login } = useAuth();
 
   // Function to handle login
