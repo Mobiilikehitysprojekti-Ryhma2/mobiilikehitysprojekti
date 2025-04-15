@@ -36,7 +36,6 @@ export default function HomeScreen({ navigation }) {
 
 
 
-
   const [location, setLocation] = useState({
     latitude: 65.0100,
     longitude: 25.4719,
@@ -52,6 +51,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
+
     fetchWalkedRoute();
     markersRef.current = markers;
   }, [markers]);
@@ -61,6 +61,7 @@ export default function HomeScreen({ navigation }) {
     const route = await loadWalkedRoute();
     setPolylineCoordinates(route);
   } 
+
 
 
 
