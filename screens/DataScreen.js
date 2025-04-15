@@ -9,15 +9,21 @@ export default function DataScreen({ navigation }) {
 
   const [walkedRoute, setWalkedRoute] = useState([]);
   const [movementData, setMovementData] = useState([]);
+
+
+useEffect(() => {
   const loadWalkedRoute = async () => {
     try {
-      const storedLocations = await AsyncStorage.getItem('walkedRoute');
-      const locations = storedLocations ? JSON.parse(storedLocations) : [];
-      setWalkedRoute(locations); 
-    } catch (error) {
-      console.error('Error loading data:', error);
+      const stored = await AsyncStorage.getItem('walkedRoute');
+      const locations = stored ? JSON.parse(stored) : [];
+      setWalkedRoute(locations);
+    } catch (err) {
+      console.error('Error loading route:', err);
     }
   };
+
+  loadWalkedRoute();
+}, []);
 
   const calculateDistancePerDay = (locations) => {
     const distancePerDay = {};
@@ -44,10 +50,8 @@ export default function DataScreen({ navigation }) {
   };
 
   useEffect(() => {
-   // console.log(movementData) //PALJON DATAA NOPEASTI KÄYTÄ VAROEN!!!!
-    loadWalkedRoute();
     if (walkedRoute.length > 0) {
-      calculateDistancePerDay(walkedRoute); 
+      calculateDistancePerDay(walkedRoute);
     }
   }, [walkedRoute]);
 
