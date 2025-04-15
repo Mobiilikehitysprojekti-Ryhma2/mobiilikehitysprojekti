@@ -25,18 +25,39 @@ export default function AvatarScreen({ navigation }) {
   const toggleCameraType = () => {
     setCameraType((prevType) => (prevType === 'back' ? 'front' : 'back'));
   };
+
   const takePhoto = async () => {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      setPhotos((prev) => [photo.uri, ...prev]);
+      const start = Date.now();
+      
+      cameraRef.current
+        ?.takePictureAsync({
+          skipProcessing: true,
+        })
+        .then((photoData) => {
+ 
+          console.log(`Delay after takePictureAsync: ${Date.now()- start} ms`);
+ 
+          setPhotos((prev) => [photoData.uri, ...prev]);
+        });
     }
   };
-
+//
+ /*
+ try {
+      const photo = await ref.takePictureAsync();
+      setPhotos((prev) => [photo.uri, ...prev]);
+    } catch (e) {
+      console.error('Error:', e);
+    }
+ 
+ 
+ */
   return (
     <View style={{ flex: 1 }}>
-      <CameraView style={{ flex: 1 }} facing={cameraType}>
+      <CameraView style={{ flex: 1 }} facing={cameraType} ref={cameraRef}>
         <View style={styles.cameraContent}>
-        <TouchableOpacity style={[styles.button, styles.captureButton]} onPress={takePhoto}>
+        <TouchableOpacity style={[styles.button, styles.captureButton]} onPress={() => takePhoto()}>
           <Text style={styles.text}>📸</Text>
         </TouchableOpacity>
           <Text style={styles.text}>Take picture</Text>
@@ -68,5 +89,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  photoGrid: {
+
+  },
+  thumbnail: {
+    width: 100,
+    height: 100,
+    margin: 5,
   },
 });
