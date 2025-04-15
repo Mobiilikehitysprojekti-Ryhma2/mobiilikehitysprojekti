@@ -6,16 +6,27 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../theme/colors";
-import { collection, getDocs } from "firebase/firestore";
-import { firestore } from "../firebase/Config";
+import {
+  firestore,
+  collection,
+  getDocs,
+  setDoc,
+  getAuth,
+  getFirestore,
+  doc,
+  serverTimestamp,
+} from "../firebase/Config";
 
 const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
+
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
   //Fetch users from firebase
   useEffect(() => {
@@ -35,31 +46,52 @@ const SearchUsersScreen = ({ navigation }) => {
     fetchUsers();
   }, []);
 
-
-  const filteredUsers = users.filter(user =>
+  const filteredUsers = users.filter((user) =>
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-    // Add friend
-    const addFriend = async (friendId) => {
-      try {
-        const userRef = doc(firestore, "users", currentUserId);
-        const friendRef = doc(firestore, "users", friendId);
-  
-        // Add to both friend lists
-        await updateDoc(userRef, {
-          friends: arrayUnion(friendId),
-        });
-        await updateDoc(friendRef, {
-          friends: arrayUnion(currentUserId),
-        });
-  
-        console.log("Kaveri lisätty onnistuneesti!");
-      } catch (error) {
-        console.error("Virhe kaverin lisäämisessä: ", error);
-      }
-    };
-  
+  // Add friend
+  /* const addFriend = async (friendId) => {
+    try {
+      const userRef = doc(firestore, "users", currentUserId);
+      const friendRef = doc(firestore, "users", friendId);
+
+      // Add to both friend lists
+      await updateDoc(userRef, {
+        friends: arrayUnion(friendId),
+      });
+      await updateDoc(friendRef, {
+        friends: arrayUnion(currentUserId),
+      });
+
+      console.log("Kaveri lisätty onnistuneesti!");
+    } catch (error) {
+      console.error("Virhe kaverin lisäämisessä: ", error);
+    }
+  }; */
+
+  // Add friend function
+  async function addFriend({userEmail, userId, friendId, friendEmail }) {
+    try {
+
+      // Add friend to user's collection
+      await setDoc(doc(collection(firestore, "users", userId, "friends"), friendId), {
+        addedAt: serverTimestamp(),
+        email: friendEmail
+      });
+
+      // Add user to friend's collection
+      await setDoc(doc(collection(firestore, "users", friendId, "friends"), userId), {
+        addedAt: serverTimestamp(),
+        email: userEmail
+      });
+
+      console.log("Friend added!");
+      console.log(currentUser.email, "lisäsi kaveriksi", friendEmail);
+    } catch (error) {
+      console.error("Error adding friend: ", error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -80,19 +112,22 @@ const SearchUsersScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.userItem}>
-            <Image
-              source={{ uri: item.profilePicture }}
-              style={styles.userImage}
-            />
-              <Text style={styles.userName}>{item.name}</Text>
-            
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => addFriend(item.id)}
-              >
-                <Text style={styles.addButtonText}>Lisää kaveriksi</Text>
-              </TouchableOpacity>
-            
+            <Image source={{ uri: item.profilePicture }} style={styles.userImage} />
+            <Text style={styles.userName}>{item.username}</Text>
+
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() =>
+                addFriend({
+                  userEmail: currentUser.email,
+                  userId: currentUser.uid,
+                  friendId: item.id,
+                  friendEmail: item.email,
+                })
+              }
+            >
+              <Text style={styles.addButtonText}>Lisää kaveriksi</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -143,12 +178,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
-    borderWidth:3,
+    borderWidth: 3,
     borderColor: Colors.onPrimaryContainer,
   },
   userName: {
     fontSize: 18,
-    color: Colors.onPrimaryContainer
+    color: Colors.onPrimaryContainer,
   },
   addButton: {
     marginTop: 10,
