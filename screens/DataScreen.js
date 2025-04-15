@@ -52,6 +52,9 @@ export default function DataScreen({ navigation }) {
   }, [walkedRoute]);
 
 
+  
+
+
   return (
     <View>
       <Text>Koko liikkuminen</Text>

@@ -1,29 +1,25 @@
 import { View, Text, Button, Modal, StyleSheet } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../firebase/Config";
 
-
-const Routefinder = ({ closeModal }) => {
-
-//tänne kohteiden haku backendistä kun saadaan päätettyä backendin malli
-
+const Routefinder = ({}) => {
+ 
+   
+  
 
 
 
   return (
-    <Modal
-      transparent={true}
-      animationType="slide"
-      visible={true}
-      onRequestClose={closeModal}
-    >
+
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text>Routefinder Modal</Text>
-          <Button title="Close" onPress={closeModal} />
+          <Text>Route</Text>
+         
         </View>
       </View>
-    </Modal>
+
   );
 };
   

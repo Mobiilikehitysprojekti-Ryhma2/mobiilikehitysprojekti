@@ -51,8 +51,19 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
+
+    fetchWalkedRoute();
     markersRef.current = markers;
   }, [markers]);
+
+
+  const fetchWalkedRoute = async () => {
+    const route = await loadWalkedRoute();
+    setPolylineCoordinates(route);
+  } 
+
+
+
 
   useEffect(() => {
     (async () => {
@@ -164,7 +175,7 @@ export default function HomeScreen({ navigation }) {
     try {
       const storedLocations = await AsyncStorage.getItem('walkedRoute');
       const locations = storedLocations ? JSON.parse(storedLocations) : [];
-      console.log(locations);
+      //console.log(locations);
       return locations; // 
     } catch (error) {
       console.error('Error', error);
@@ -269,20 +280,7 @@ export default function HomeScreen({ navigation }) {
           />
         )}
 
-        {/* This adds the line between self added markers */}
-        {markers.length > 0 && (
-          <Polyline
-            coordinates={[
-              { latitude: location.latitude, longitude: location.longitude },
-              ...markers.map((marker) => ({
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              })),
-            ]}
-            strokeColor="red"
-            strokeWidth={6}
-          />
-        )}
+       
 
       </MapView>
       <Modal
