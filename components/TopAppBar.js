@@ -3,18 +3,28 @@ import { React, useEffect, useState } from 'react'
 import { Appbar } from "react-native-paper";
 import { getDistance } from "geolib";
 
-export default function TopAppBar({ markers, setMarkers, setModalVisible, location }) {
+export default function TopAppBar({ markers, setMarkers, setModalVisible, location, finishedMarkers, setFinishedMarkers }) {
 
     const [distance, setDistance] = useState(0);
 
     useEffect(() => {
-        calculateDistance(); 
+        calculateDistance();
     }, [markers, location]);
 
     const removeAllMarkers = () => {
         setMarkers([]);
+        setFinishedMarkers([]);
         setDistance(0)
     };
+    const removeFoundAllMarkers = () => {
+        setFinishedMarkers([]);
+        console.log("Found / not Found:", finishedMarkers, markers)
+    };
+
+    const logMarkers = () => {
+        console.log(markers)
+        console.log(finishedMarkers)
+    }
 
     const toggleModal = () => {
         setModalVisible((prevState) => !prevState);
@@ -57,6 +67,13 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
         <Appbar.Header>
             <Appbar.Action icon={"map-marker-remove-outline"} onPress={removeAllMarkers} />
             <Appbar.Action icon={"cog"} onPress={toggleModal} />
+
+            {/*
+            Buttons for marker testing
+            <Appbar.Action icon={"map-marker"} onPress={logMarkers} />    
+            <Appbar.Action icon={"map"} onPress={removeFoundAllMarkers} />
+             */}
+             
             <Text style={styles.distanceMeter}>{distance.toFixed(2)} km</Text>
         </Appbar.Header>
     );

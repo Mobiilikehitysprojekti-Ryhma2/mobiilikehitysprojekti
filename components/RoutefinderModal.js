@@ -1,92 +1,74 @@
 import { View, Text, Button, Modal, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import uuid from "react-native-uuid"
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-  deleteUser,
-  createUserWithEmailAndPassword,
-  setDoc,
-  doc,
-  firestore,
-  deleteDoc,
-} from "../firebase/Config";
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../firebase/Config";
+import { Picker } from "@react-native-picker/picker";
 
 const RoutefinderModal = ({ visible, closeModal, markers, setMarkers }) => {
+  const [routes, setRoutes] = useState([]);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [selectedRouteMarkers, setSelectedRouteMarkers] = useState([]);
+
+  useEffect(() => {
+    console.log("toimiiko edes")
+    
+
+    fetchRoutes(); 
+  }, []);
+
+  const handleRouteChange = (value) => {
+    setSelectedRoute(value);  
+  };
+
+  const fetchRoutes = async () => {
+    try {
+      //console.log(firestore)
+      const routesRef = collection(firestore, "routes");
+      const snapshot = await getDocs(routesRef);
   
+      const routes = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setRoutes(routes); 
+    } catch (error) {
+      console.error("Error fetching routes: ", error);
+    }
+  };
 
 
-const fetchMarkers = () => {
- 
-    const coordinate = {latitude: 65.06254, longitude: 25.465509};
-    
-          const id = uuid.v4()
-          setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-          ]);
-}
-// 
 
-const FetchHardMarkers = async () => {
-  try {
-    const markersCollectionRef = firestore().collection('markers');
-    const snapshot = await markersCollectionRef.get();
+  return (
+    <Modal visible={visible} animationType="slide" transparent={true}>
+      <View style={styles.modalBackground}>
+        <View style={styles.modalContent}>
+          <Text style={styles.title}>Select a Route</Text>
 
-    const fetchedMarkers = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(), 
-    }));
+          <Picker
+            selectedValue={selectedRoute}
+            onValueChange={handleRouteChange}
+          >
+            <Picker.Item label="Select a Route" value={null} />
+            {routes.map((route, index) => (
+              <Picker.Item key={index} label={route.name} value={route.id} />
+            ))}
+          </Picker>
 
-    //console.log('Markers:', fetchedMarkers);
-    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-    ]);
-
-    return fetchedMarkers;
-  } catch (error) {
-    console.error("Error markers:", error);
-    return [];
-  }
-}
-
-const FetchMediumMarkers = async () => {
-  try {
-    const markersCollectionRef = firestore().collection('markers');
-    const snapshot = await markersCollectionRef.get();
-
-    const fetchedMarkers = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(), 
-    }));
-
-    //console.log('Markers:', fetchedMarkers);
-    
-    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-    ]);
-
-    return fetchedMarkers;
-  } catch (error) {
-    console.error("Error markers:", error);
-    return [];
-  }
-
-}
-
-return visible ? (
- 
-    <View style={styles.modalContent}>
-    
-      <Button title="Reitit" onPress={fetchMarkers} />
-      <Button title="MediumReitit" onPress={FetchMediumMarkers} />
-      <Button title="HardReitit" onPress={FetchHardMarkers} />
-      <Button title="Close" onPress={closeModal} />
-    </View>
- 
-) : null; 
+          <Button title="Close" onPress={closeModal} />
+        </View>
+      </View>
+    </Modal>
+  );
 };
   
   const styles = StyleSheet.create({
-   
+    modalBackground: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "blue", 
+    },
     modalContent: {
       backgroundColor: "white",
       padding: 20,
