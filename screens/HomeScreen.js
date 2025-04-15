@@ -12,10 +12,11 @@ import uuid from "react-native-uuid"
 import TopAppBar from "../components/TopAppBar";
 import MapSettingsModal from "../components/MapSettingsModal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAvatar } from '../helpers/useAvatar';
 
 export default function HomeScreen({ navigation }) {
-  const [search, setSearch] = useState("");
-  const [camera, setCamera] = useState('')
+  const [search, setSearch] = useState(""); //poistoon?
+  const [camera, setCamera] = useState('') //poistoon?
   const [markers, setMarkers] = useState([]);
   const [finishedMarkers, setFinishedMarkers] = useState([])
   //const origin = {latitude: 65.03439, longitude: 25.2803};
@@ -34,7 +35,7 @@ export default function HomeScreen({ navigation }) {
   const [mapType, setMapType] = useState("hybrid");
 
 
-
+const avatarUri = useAvatar();
 
   const [location, setLocation] = useState({
     latitude: 65.0100,
@@ -51,7 +52,6 @@ export default function HomeScreen({ navigation }) {
   };
 
   useEffect(() => {
-
     fetchWalkedRoute();
     markersRef.current = markers;
   }, [markers]);
@@ -64,17 +64,17 @@ export default function HomeScreen({ navigation }) {
 
 
 
-
   useEffect(() => {
-    (async () => {
+    let subscription;
+  
+    const locationCheck = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        console.log('Permission denied');
         return;
       }
-
-
-      const locationCheck = await Location.watchPositionAsync(
+  
+      subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
           timeInterval: 1000,
@@ -82,37 +82,48 @@ export default function HomeScreen({ navigation }) {
         async (newLocation) => {
           setLocation(newLocation.coords);
           await saveLocationToAsyncStorage(newLocation);
-
+  
           markersRef.current.forEach((marker) => {
             const distance = getDistance(
               { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
               { latitude: marker.latitude, longitude: marker.longitude }
             );
-
+  
             if (distance < PROXIMITY_THRESHOLD) {
               handleFoundMarker(marker);
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
           });
-
+  
           if (mapRef.current) {
-            mapRef.current.animateCamera({
-              center: {
-                latitude: newLocation.coords.latitude,
-                longitude: newLocation.coords.longitude,
+            mapRef.current.animateCamera(
+              {
+                center: {
+                  latitude: newLocation.coords.latitude,
+                  longitude: newLocation.coords.longitude,
+                },
+                pitch: 90,
+                heading: 0,
+                zoom: 50,
               },
-              pitch: 90,
-              heading: 0,
-              zoom: 50,
-            }, zoomRange);
+              zoomRange
+            );
           }
         }
       );
-
-      return () => locationCheck.remove();
-    })();
+    };
+  
+    locationCheck();
+  
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
   }, []);
+ 
+
 
   const saveLocationToAsyncStorage = async (newLocation) => {
     try {
@@ -241,7 +252,13 @@ export default function HomeScreen({ navigation }) {
         }}
           title="Oma sijainti"
         >
-          <Image source={require('../images/marker.png')} style={{ height: 40, width: 40 }} />
+          {avatarUri ? (
+        <Image source={{ uri: avatarUri }} style={{ height: 40, width: 40 }} />
+      ) : (
+        <Text>No avatar selected</Text>
+      )}
+
+          
 
         </Marker>
         {markers.map((item, index) => (
