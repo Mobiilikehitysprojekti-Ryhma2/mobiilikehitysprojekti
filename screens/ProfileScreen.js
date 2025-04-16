@@ -49,13 +49,13 @@ export default function ProfileScreen({ navigation }) {
           onPress={() => navigation.navigate('Settings')}
         />
         <Ionicons
-          name="alert"
+          name="bar-chart"
           size={40}
           color={Colors.primary}
           onPress={() => navigation.navigate('Data')}
         />
         <Ionicons
-          name="alert"
+          name="image"
           size={40}
           color={Colors.primary}
           onPress={() => navigation.navigate('Avatar')}
