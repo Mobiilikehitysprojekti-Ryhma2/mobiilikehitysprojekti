@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart, BarChart } from "react-native-gifted-charts"
 import { getDistance } from 'geolib';
@@ -9,15 +9,21 @@ export default function DataScreen({ navigation }) {
 
   const [walkedRoute, setWalkedRoute] = useState([]);
   const [movementData, setMovementData] = useState([]);
+
+
+useEffect(() => {
   const loadWalkedRoute = async () => {
     try {
-      const storedLocations = await AsyncStorage.getItem('walkedRoute');
-      const locations = storedLocations ? JSON.parse(storedLocations) : [];
-      setWalkedRoute(locations); 
-    } catch (error) {
-      console.error('Error loading data:', error);
+      const stored = await AsyncStorage.getItem('walkedRoute');
+      const locations = stored ? JSON.parse(stored) : [];
+      setWalkedRoute(locations);
+    } catch (err) {
+      console.error('Error loading route:', err);
     }
   };
+
+  loadWalkedRoute();
+}, []);
 
   const calculateDistancePerDay = (locations) => {
     const distancePerDay = {};
@@ -44,10 +50,8 @@ export default function DataScreen({ navigation }) {
   };
 
   useEffect(() => {
-   // console.log(movementData) //PALJON DATAA NOPEASTI KÄYTÄ VAROEN!!!!
-    loadWalkedRoute();
     if (walkedRoute.length > 0) {
-      calculateDistancePerDay(walkedRoute); 
+      calculateDistancePerDay(walkedRoute);
     }
   }, [walkedRoute]);
 
@@ -71,6 +75,7 @@ export default function DataScreen({ navigation }) {
         showValueOnTopOfBar={true}
         barStyle={{ backgroundColor: 'white' }}
       />
+   <Button title="Palaa karttasivulle" onPress={() => navigation.navigate('Home')} />
     </View>
   );
 }
