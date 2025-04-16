@@ -13,6 +13,7 @@ import TopAppBar from "../components/TopAppBar";
 import MapSettingsModal from "../components/MapSettingsModal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAvatar } from '../helpers/useAvatar';
+import Weatherinfo from "../components/weatherInfo";
 
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState(""); //poistoon?
@@ -300,6 +301,18 @@ const avatarUri = useAvatar();
        
 
       </MapView>
+      <View style={{
+        position: 'absolute',
+        top: 120,
+        left: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 8,
+        borderRadius: 8,
+        zIndex: 10,
+      }}>
+       
+        {location && <Weatherinfo location={location} />}
+      </View>
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -316,7 +329,9 @@ const avatarUri = useAvatar();
               </>
             )}
           </View>
+          
         </View>
+        
       </Modal>
       <Button
         title="Show Options"

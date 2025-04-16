@@ -6,13 +6,9 @@ export const useAvatar = () => {
 
   useEffect(() => {
     const loadAvatar = async () => {
-      try {
-        const uri = await AsyncStorage.getItem('selectedAvatar');
-        if (uri) {
-          setAvatarUri(uri);
-        }
-      } catch (err) {
-        console.error('Failed to load avatar:', err);
+      const uri = await AsyncStorage.getItem('selectedAvatar');
+      if (uri) {
+        setAvatarUri(uri);
       }
     };
 
