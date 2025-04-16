@@ -7,9 +7,9 @@ import Button from "../components/Button";
 
 const RegisterScreen = ({ navigation }) => {
   const { register } = useAuth();
-  const [email, setEmail] = useState("jee@jee.com");
-  const [username, setUsername] = useState("jee");
-  const [password, setPassword] = useState("jee123");
+  const [email, setEmail] = useState("juu@juu.com");
+  const [username, setUsername] = useState("juu");
+  const [password, setPassword] = useState("juu123");
   const [confirmPassword, setConfirmPassword] = useState(password);
   const [modalVisible, setModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
