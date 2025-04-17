@@ -60,7 +60,7 @@ useEffect(() => {
 
 
   return (
-    <View>
+    <View style={{ flex: 1, paddingTop: 40 }}>
       <Text>Koko liikkuminen</Text>
       <BarChart
         data={movementData}
@@ -73,9 +73,17 @@ useEffect(() => {
         yAxisLabelTextStyle={{ fontSize: 10 }}
         isAnimated={true}
         showValueOnTopOfBar={true}
-        barStyle={{ backgroundColor: 'white' }}
+        barStyle={{ backgroundColor: '#006A66' }}
       />
-   <Button title="Palaa karttasivulle" onPress={() => navigation.navigate('Home')} />
+   <Button title="Palaa Karttasivulle" onPress={() => navigation.navigate('Home')} color='#4A6361'/>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    fontSize: 18,
+  },
+ 
+
+});

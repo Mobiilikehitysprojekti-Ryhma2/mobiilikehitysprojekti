@@ -95,7 +95,7 @@ export default function AvatarScreen({ navigation }) {
           <Button title="Toggle Camera" onPress={toggleCameraType} />
         </View>
       </CameraView>
-      <Button title="Palaa karttasivulle" onPress={() => navigation.navigate('Home')} />
+      <Button title="Palaa karttasivulle" onPress={() => navigation.navigate('Home')} color="#4A6361" />
       <FlatList
         data={photos}
         keyExtractor={(item, index) => index.toString()}
