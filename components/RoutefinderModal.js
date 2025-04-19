@@ -67,7 +67,7 @@ const [error, setError] = useState(null);
               onValueChange={handleRouteChange}
               style={{
                 height: 50,
-                width: 250,
+                width: "50%",
                 backgroundColor: "#f0f0f0", 
                 color: "#000",              
                 marginBottom: 20,
