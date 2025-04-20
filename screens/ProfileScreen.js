@@ -1,28 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from "../theme/colors";
 import Button from "../components/Button";
-import { TextInput } from "react-native-paper";
-import { addDoc, collection, firestore, getAuth, doc, setDoc, getDoc } from "../firebase/Config"
-import { useAuth } from "../context/AuthContext";
-import InfoEditor from "../components/InfoEditor";
-import { getUserInfo, updateUserInfo } from "../helpers/UserInfo";
-
+import { getUserInfo } from "../helpers/UserInfo";
+import { useAvatar } from "../helpers/useAvatar";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen({ navigation }) {
 
   const [currentUser, setCurrentUser] = useState({})
+  const [userAvatar, setUserAvatar] = useState("")
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUserInfo();
-      console.log(userData)
-      setCurrentUser(userData);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUser = async () => {
+        const userData = await getUserInfo()
+        const image = await AsyncStorage.getItem('selectedAvatar')
+        setUserAvatar(image)
+        setCurrentUser(userData)
+      };
 
-    fetchUser();
-  }, []);
+      fetchUser();
+    }, [])
+  );
+
 
   return (
     <View style={styles.container}>
@@ -62,40 +65,38 @@ export default function ProfileScreen({ navigation }) {
         />
       </View>
 
-      <Image
-        source={require("../assets/placeHolderProfileImage.jpg")}
-        style={styles.profileImage}
-      />
+      {useAvatar ? (
+        <Image
+        source={{ uri: userAvatar }}
+          style={styles.profileImage}
+        />
+      ) : (
+        <Image
+          source={require("../assets/placeHolderProfileImage.jpg")}
+          style={styles.profileImage}
+        />)}
 
       <View style={styles.username}>
-        <InfoEditor
-          info={currentUser.username}
-          toUpdate={"username"}
-          currentUser={currentUser}
-          setCurrentUser={setCurrentUser}
-          updateUserInfo={updateUserInfo}
-          isUserName={true}
-        />
+        <Text style={styles.usernameText}>{currentUser.username}</Text>
       </View>
 
       <View style={styles.contentContainer}>
         {currentUser ? (
-          <>
 
-            <View style={styles.userInfo}>
+          <View style={styles.userInfo}>
 
-              <Text style={styles.userInfoText}>Nimi</Text>
-              <Text style={styles.userInfoText}>{currentUser.fullName}</Text>
+            <Text style={styles.userInfoText}>Nimi</Text>
+            <Text style={styles.userInfoText}>{currentUser.fullName}</Text>
 
-              <Text style={styles.userInfoText}>Bio</Text>
-              <Text style={styles.userInfoText}>{currentUser.bio}</Text>
+            <Text style={styles.userInfoText}>Bio</Text>
+            <Text style={styles.userInfoText}>{currentUser.bio}</Text>
 
-              <Text style={styles.userInfoText}>Maa</Text>
-              <Text style={styles.userInfoText}>{currentUser.country}</Text>
+            <Text style={styles.userInfoText}>Maa</Text>
+            <Text style={styles.userInfoText}>{currentUser.country}</Text>
 
-              <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
-            </View>
-          </>
+            <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
+          </View>
+
         ) : (
           <>
             <Text style={styles.userInfoText}>Tietoja ei löydy</Text>
@@ -143,6 +144,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 320,
   },
+  usernameText: {
+    color: Colors.primary,
+    fontSize: 26,
+    fontWeight: "bold",
+    paddingTop: 8,
+  },
   profileToolBar: {
     position: "absolute",
     right: 18,
@@ -159,7 +166,7 @@ const styles = StyleSheet.create({
   userInfo: {
     width: "90%",
     position: "absolute",
-    bottom: 40
+    bottom: 20
   },
   userInfoText: {
     fontSize: 18,

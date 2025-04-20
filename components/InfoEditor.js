@@ -1,5 +1,4 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import Button from "../components/Button";
 import { TextInput } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '../theme/colors'

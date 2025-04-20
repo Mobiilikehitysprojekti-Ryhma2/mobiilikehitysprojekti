@@ -9,11 +9,9 @@ import { firestore, getAuth, doc, setDoc, getDoc } from "../firebase/Config"
 
       const userRef = doc(firestore, "users", user.uid)
       const userSnap = await getDoc(userRef);
-      console.log("USER INFO", userSnap.data())
-      if (userSnap.exists()) {
-        const data = userSnap.data();
 
-        console.log("User Data:", data);
+      if (userSnap.exists()) {
+
         return(userSnap.data())
       } else {
         console.log("No user data found!");

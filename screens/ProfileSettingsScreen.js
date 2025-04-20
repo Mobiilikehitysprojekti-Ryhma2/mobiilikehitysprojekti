@@ -36,7 +36,6 @@ export default function ProfileSettingsScreen({ navigation }) {
                 currentUser={currentUser}
                 setCurrentUser={setCurrentUser}
                 updateUserInfo={updateUserInfo}
-                isUserName={true}
             />
 
             <Text style={styles.userInfoText}>Muuta nimi:</Text>
