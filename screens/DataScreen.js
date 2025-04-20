@@ -9,7 +9,7 @@ export default function DataScreen({ navigation }) {
 
   const [walkedRoute, setWalkedRoute] = useState([]);
   const [movementData, setMovementData] = useState([]);
-
+  const [totalDistance, setTotalDistance] = useState(0);
 
 useEffect(() => {
   const loadWalkedRoute = async () => {
@@ -27,6 +27,8 @@ useEffect(() => {
 
   const calculateDistancePerDay = (locations) => {
     const distancePerDay = {};
+    let total = 0;
+
     for (let i = 1; i < locations.length; i++) {
       const prevLocation = locations[i - 1];
       const currentLocation = locations[i];
@@ -39,6 +41,7 @@ useEffect(() => {
         distancePerDay[date] = 0;
       }
       distancePerDay[date] += distance;
+      total += distance;
     }
 
     const chartData = Object.keys(distancePerDay).map((date) => ({
@@ -47,6 +50,7 @@ useEffect(() => {
     }));
 
     setMovementData(chartData);
+    setTotalDistance(total);
   };
 
   useEffect(() => {
@@ -75,6 +79,7 @@ useEffect(() => {
         showValueOnTopOfBar={true}
         barStyle={{ backgroundColor: '#006A66' }}
       />
+      <Text style={styles.text}>Kuljettu kokonaismatka {(totalDistance / 1000).toFixed(2)} km</Text>
    <Button title="Palaa Karttasivulle" onPress={() => navigation.navigate('Home')} color='#4A6361'/>
     </View>
   );
@@ -84,6 +89,10 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 18,
   },
- 
+ text: {
+  alignItems: 'center',
+  flexDirection: 'row',
+  padding: 20,
+ },
 
 });
