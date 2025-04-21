@@ -334,7 +334,7 @@ const avatarUri = useAvatar();
         
       </Modal>
       <Button
-        title="Show Options"
+        title="Reittivalikko"
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
         color="#4A6361"
       />

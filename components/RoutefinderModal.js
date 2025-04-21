@@ -55,7 +55,7 @@ const [error, setError] = useState(null);
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalBackground}>
-      <Text style={styles.title}>Select a Route</Text>
+      <Text style={styles.title}>Valitse reitti</Text>
         <View style={styles.modalContent}>
           
 
@@ -74,9 +74,9 @@ const [error, setError] = useState(null);
                 marginBottom: 20,
               }}
             >
-              <Picker.Item label="Select a Route" value={null} />
+              <Picker.Item label="Valitse reitti" value={null} />
               {routes.map((route, index) => (
-                <Picker.Item key={index} label={route.name} value={route.id} />
+                <Picker.Item key={index} label={route.name + " " + route.difficulty} value={route.id} />
               ))}
               
             </Picker>
@@ -84,7 +84,7 @@ const [error, setError] = useState(null);
 
           
         </View>
-        <Button title="Close" onPress={closeModal} style={{alignItems: 'flex-end'}}/>
+        <Button title="Sulje" onPress={closeModal} style={{alignItems: 'flex-end'}}/>
       </View>
     </Modal>
   );

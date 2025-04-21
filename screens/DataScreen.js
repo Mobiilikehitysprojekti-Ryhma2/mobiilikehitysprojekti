@@ -48,7 +48,7 @@ useEffect(() => {
       distancePerMonth[monthKey] += distance;
       total += distance;
     }
-
+    
     const chartData = Object.keys(distancePerMonth).map((monthkey) => ({
       label: monthkey,
       value: distancePerMonth[monthkey] / 1000, // metri/kilometri
