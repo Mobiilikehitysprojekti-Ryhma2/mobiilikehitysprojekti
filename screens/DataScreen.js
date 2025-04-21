@@ -25,8 +25,9 @@ useEffect(() => {
   loadWalkedRoute();
 }, []);
 
-  const calculateDistancePerDay = (locations) => {
-    const distancePerDay = {};
+//voi lisätä napin mistä valita vuosi miltä liikkuminen näytetään
+  const calculateDistancePerMonth = (locations) => {
+    const distancePerMonth = {};
     let total = 0;
 
     for (let i = 1; i < locations.length; i++) {
@@ -36,17 +37,21 @@ useEffect(() => {
         { latitude: prevLocation.latitude, longitude: prevLocation.longitude },
         { latitude: currentLocation.latitude, longitude: currentLocation.longitude }
       );
-      const date = new Date(currentLocation.timestamp).toISOString().split('T')[0];
-      if (!distancePerDay[date]) {
-        distancePerDay[date] = 0;
+      const date = new Date(currentLocation.timestamp);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const year = date.getFullYear();
+      const monthKey = `${month} ${year}`;
+  
+      if (!distancePerMonth[monthKey]) {
+        distancePerMonth[monthKey] = 0;
       }
-      distancePerDay[date] += distance;
+      distancePerMonth[monthKey] += distance;
       total += distance;
     }
 
-    const chartData = Object.keys(distancePerDay).map((date) => ({
-      x: date,
-      y: distancePerDay[date] / 1000, // metri/kilometri
+    const chartData = Object.keys(distancePerMonth).map((monthkey) => ({
+      label: monthkey,
+      value: distancePerMonth[monthkey] / 1000, // metri/kilometri
     }));
 
     setMovementData(chartData);
@@ -55,7 +60,7 @@ useEffect(() => {
 
   useEffect(() => {
     if (walkedRoute.length > 0) {
-      calculateDistancePerDay(walkedRoute);
+      calculateDistancePerMonth(walkedRoute);
     }
   }, [walkedRoute]);
 

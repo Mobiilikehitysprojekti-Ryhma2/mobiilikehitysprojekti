@@ -36,7 +36,7 @@ const [error, setError] = useState(null);
         id: doc.id,
         ...doc.data()
       }));
-      console.log("Markerit ", routes);
+      //console.log("Markerit ", routes);
       setRoutes(routes); 
       setError(null);
     } catch (error) {
