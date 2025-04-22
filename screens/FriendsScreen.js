@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,20 +9,39 @@ import {
 } from "react-native";
 import { Colors } from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { collection, getDocs, getAuth, firestore } from "../firebase/Config";
 
 export default function FriendScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState([
-    { id: "1", name: "Käyttäjä1" },
-    { id: "2", name: "Käyttäjä2" },
-    { id: "3", name: "Käyttäjä3" },
-    { id: "4", name: "Käyttäjä4" },
-    { id: "5", name: "Käyttäjä5" },
-  ]);
+  const [friends, setFriends] = useState([]);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const friendsRef = collection(firestore, "users", currentUser.uid, "friends");
+        const querySnapshot = await getDocs(friendsRef);
+
+        const friendsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setFriends(friendsList);
+      } catch (error) {
+        console.error("Error fetching friends: ", error);
+      }
+    };
+
+    if (currentUser) {
+      fetchFriends();
+    }
+  }, [currentUser]);
+
+  const filteredUsers = friends.filter((user) =>
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -42,10 +61,17 @@ export default function FriendScreen({ navigation }) {
       <FlatList
         data={filteredUsers}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            Ei kavereita tai hakutuloksia.
+          </Text>
+        }
         renderItem={({ item }) => (
           <View style={styles.userItem}>
-            <Text>{item.name}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Chat", { user: item })}>
+            <Text>{item.username || item.email}</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Chat", { user: item })}
+            >
               <Ionicons name="chatbubble-outline" size={32} />
             </TouchableOpacity>
           </View>
@@ -57,11 +83,6 @@ export default function FriendScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 32,
-    paddingBottom: 16,
-    height: "100%",
-    alignItems: "center",
-    backgroundColor: Colors.background,
     flex: 1,
     padding: 20,
     backgroundColor: "#f5f5f5",
@@ -78,11 +99,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: Colors.onPrimaryContainer,
     fontFamily: "Exo_400Regular",
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
   },
   input: {
     height: 40,
