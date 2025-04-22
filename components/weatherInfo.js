@@ -18,7 +18,6 @@ export default function Weatherinfo({ location }) {
         const response = await fetch(URL);
         if (response.ok) {
           const json = await response.json();
-          // Get current hour
           const currentHour = new Date().getHours();
           const temp = json.hourly.temperature_2m[currentHour];
           const code = json.hourly.weather_code[currentHour];

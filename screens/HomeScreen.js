@@ -308,7 +308,7 @@ export default function HomeScreen({ navigation }) {
         position: 'absolute',
         top: 120,
         left: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'transparent',
         padding: 8,
         borderRadius: 8,
         zIndex: 10,
@@ -337,16 +337,17 @@ export default function HomeScreen({ navigation }) {
 
       </Modal>
       <Button
-        title="Show Options"
+        title="Reittivalikko"
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
+        color="#4A6361"
       />
       {isAppOptionsModalVisible && (
 
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Button title="Reset" onPress={onReset} />
-            <Button title="Reitti" onPress={openRoutefinderModal} />
-            <Button title="kuljettumatkatesti" onPress={Matkatesti} />
+            <Button title="Reset" onPress={onReset} color="#4A6361"/>
+            <Button title="Reitti" onPress={openRoutefinderModal} color="#4A6361"/>
+            <Button title="Demo esitystä varten" onPress={Matkatesti} color="red"/>
 
           </View>
         </View>
@@ -382,4 +383,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  modalContainer: {
+backgroundColor: '#006A66',
+alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#006A66',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  }
+
 });
