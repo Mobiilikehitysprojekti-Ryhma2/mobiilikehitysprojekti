@@ -21,7 +21,7 @@ import {
   query,
   orderBy,
 } from "../firebase/Config";
-import { convertFirebaseTimeStampToJS } from "../helper/Functions";
+import { convertFirebaseTimeStampToJS } from "../helpers/Functions";
 
 export default function ChatScreen({ navigation, route }) {
   const { user } = route.params; //User information from the previous page
