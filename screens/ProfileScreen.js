@@ -93,8 +93,7 @@ export default function ProfileScreen({ navigation }) {
 
             <Text style={styles.userInfoText}>Maa</Text>
             <Text style={styles.userInfoText}>{currentUser.country}</Text>
-
-            <Button title="Lisää kaveriksi" styleType="primary" />{/* TODO: add add to friend functionality */}
+            
           </View>
 
         ) : (
