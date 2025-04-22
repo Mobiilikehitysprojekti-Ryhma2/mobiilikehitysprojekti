@@ -17,7 +17,7 @@ const [error, setError] = useState(null);
   const handleRouteChange = (value) => {
     setSelectedRoute(value); 
     const route = routes.find(r => r.id === value);
-    console.log("markers:", route?.markers); 
+   // console.log("markers:", route?.markers); 
     const selected = routes.find((r) => r.id === value);
   if (selected?.markers) {
     setMarkers(selected.markers); 
@@ -36,11 +36,11 @@ const [error, setError] = useState(null);
         id: doc.id,
         ...doc.data()
       }));
-      console.log("Markerit ", routes);
+      //console.log("Markerit ", routes);
       setRoutes(routes); 
       setError(null);
     } catch (error) {
-      console.error("Error fetching routes: ", error);
+      console.error("Error: ", error);
       setError("Failed to load routes");
     } finally {
       setLoading(false);
@@ -55,8 +55,9 @@ const [error, setError] = useState(null);
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalBackground}>
+      <Text style={styles.title}>Valitse reitti</Text>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Select a Route</Text>
+          
 
           {loading && <Text>Loading routes...</Text>}
           {error && <Text style={{ color: 'red' }}>{error}</Text>}
@@ -73,17 +74,17 @@ const [error, setError] = useState(null);
                 marginBottom: 20,
               }}
             >
-              <Picker.Item label="Select a Route" value={null} />
+              <Picker.Item label="Valitse reitti" value={null} />
               {routes.map((route, index) => (
-                <Picker.Item key={index} label={route.name} value={route.id} />
+                <Picker.Item key={index} label={route.name + " " + route.difficulty} value={route.id} />
               ))}
-              <Picker.Item label="Testi 1" value="test1" />
-              <Picker.Item label="Testi 2" value="test2" />
+              
             </Picker>
           )}
 
-          <Button title="Close" onPress={closeModal} />
+          
         </View>
+        <Button title="Sulje" onPress={closeModal} style={{alignItems: 'flex-end'}}/>
       </View>
     </Modal>
   );
@@ -94,7 +95,7 @@ const [error, setError] = useState(null);
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "blue", 
+      backgroundColor: "#006A66", 
     },
     modalContent: {
       backgroundColor: "white",
@@ -107,6 +108,7 @@ const [error, setError] = useState(null);
     title: {
       fontSize: 20,
       marginBottom: 10,
+      color: 'white'
     },
   });
 

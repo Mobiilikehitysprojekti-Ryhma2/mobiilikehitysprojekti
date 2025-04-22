@@ -9,7 +9,7 @@ export default function DataScreen({ navigation }) {
 
   const [walkedRoute, setWalkedRoute] = useState([]);
   const [movementData, setMovementData] = useState([]);
-
+  const [totalDistance, setTotalDistance] = useState(0);
 
 useEffect(() => {
   const loadWalkedRoute = async () => {
@@ -25,8 +25,11 @@ useEffect(() => {
   loadWalkedRoute();
 }, []);
 
-  const calculateDistancePerDay = (locations) => {
-    const distancePerDay = {};
+//voi lisätä napin mistä valita vuosi miltä liikkuminen näytetään
+  const calculateDistancePerMonth = (locations) => {
+    const distancePerMonth = {};
+    let total = 0;
+
     for (let i = 1; i < locations.length; i++) {
       const prevLocation = locations[i - 1];
       const currentLocation = locations[i];
@@ -34,24 +37,30 @@ useEffect(() => {
         { latitude: prevLocation.latitude, longitude: prevLocation.longitude },
         { latitude: currentLocation.latitude, longitude: currentLocation.longitude }
       );
-      const date = new Date(currentLocation.timestamp).toISOString().split('T')[0];
-      if (!distancePerDay[date]) {
-        distancePerDay[date] = 0;
+      const date = new Date(currentLocation.timestamp);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const year = date.getFullYear();
+      const monthKey = `${month} ${year}`;
+  
+      if (!distancePerMonth[monthKey]) {
+        distancePerMonth[monthKey] = 0;
       }
-      distancePerDay[date] += distance;
+      distancePerMonth[monthKey] += distance;
+      total += distance;
     }
-
-    const chartData = Object.keys(distancePerDay).map((date) => ({
-      x: date,
-      y: distancePerDay[date] / 1000, // metri/kilometri
+    
+    const chartData = Object.keys(distancePerMonth).map((monthkey) => ({
+      label: monthkey,
+      value: distancePerMonth[monthkey] / 1000, // metri/kilometri
     }));
 
     setMovementData(chartData);
+    setTotalDistance(total);
   };
 
   useEffect(() => {
     if (walkedRoute.length > 0) {
-      calculateDistancePerDay(walkedRoute);
+      calculateDistancePerMonth(walkedRoute);
     }
   }, [walkedRoute]);
 
@@ -60,7 +69,7 @@ useEffect(() => {
 
 
   return (
-    <View>
+    <View style={{ flex: 1, paddingTop: 40 }}>
       <Text>Koko liikkuminen</Text>
       <BarChart
         data={movementData}
@@ -73,9 +82,22 @@ useEffect(() => {
         yAxisLabelTextStyle={{ fontSize: 10 }}
         isAnimated={true}
         showValueOnTopOfBar={true}
-        barStyle={{ backgroundColor: 'white' }}
+        barStyle={{ backgroundColor: '#006A66' }}
       />
-   <Button title="Palaa karttasivulle" onPress={() => navigation.navigate('Home')} />
+      <Text style={styles.text}>Kuljettu kokonaismatka {(totalDistance / 1000).toFixed(2)} km</Text>
+   <Button title="Palaa Karttasivulle" onPress={() => navigation.navigate('Home')} color='#4A6361'/>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    fontSize: 18,
+  },
+ text: {
+  alignItems: 'center',
+  flexDirection: 'row',
+  padding: 20,
+ },
+
+});
