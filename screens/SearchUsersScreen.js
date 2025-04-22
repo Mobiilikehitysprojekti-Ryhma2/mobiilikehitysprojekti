@@ -14,12 +14,9 @@ import {
   firestore,
   collection,
   getDocs,
-  setDoc,
   getAuth,
-  getFirestore,
-  doc,
-  serverTimestamp,
 } from "../firebase/Config";
+import { addFriend } from "../helpers/AddFriend";
 
 const SearchUsersScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,52 +43,11 @@ const SearchUsersScreen = ({ navigation }) => {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter((user) =>
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.email.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      user.id !== currentUser.uid
   );
-
-  // Add friend
-  /* const addFriend = async (friendId) => {
-    try {
-      const userRef = doc(firestore, "users", currentUserId);
-      const friendRef = doc(firestore, "users", friendId);
-
-      // Add to both friend lists
-      await updateDoc(userRef, {
-        friends: arrayUnion(friendId),
-      });
-      await updateDoc(friendRef, {
-        friends: arrayUnion(currentUserId),
-      });
-
-      console.log("Kaveri lisätty onnistuneesti!");
-    } catch (error) {
-      console.error("Virhe kaverin lisäämisessä: ", error);
-    }
-  }; */
-
-  // Add friend function
-  async function addFriend({userEmail, userId, friendId, friendEmail }) {
-    try {
-
-      // Add friend to user's collection
-      await setDoc(doc(collection(firestore, "users", userId, "friends"), friendId), {
-        addedAt: serverTimestamp(),
-        email: friendEmail
-      });
-
-      // Add user to friend's collection
-      await setDoc(doc(collection(firestore, "users", friendId, "friends"), userId), {
-        addedAt: serverTimestamp(),
-        email: userEmail
-      });
-
-      console.log("Friend added!");
-      console.log(currentUser.email, "lisäsi kaveriksi", friendEmail);
-    } catch (error) {
-      console.error("Error adding friend: ", error);
-    }
-  }
 
   return (
     <View style={styles.container}>
