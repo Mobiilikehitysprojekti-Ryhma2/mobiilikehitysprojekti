@@ -29,7 +29,7 @@ export default function ProfileSettingsScreen({ navigation }) {
                 <Text style={styles.headerText}>Tilin Asetukset</Text>
             </View>
 
-            <Text style={styles.userInfoText}>Muuta käytäjänimi:</Text>
+            <Text style={styles.userInfoText}>Muuta käyttäjänimi:</Text>
             <InfoEditor
                 info={currentUser.username}
                 toUpdate={"username"}
