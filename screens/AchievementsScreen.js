@@ -1,89 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useFocusEffect } from '@react-navigation/native';
+import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Colors } from "../theme/colors";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AchievementsScreen() {
-
-  const [routes, setRoutes] = useState([
-    { id: 1, name: "Eka Reitti", total: 5, completed: 5 },
-    { id: 2, name: "Toinen Reitti", total: 6, completed: 3 },
-    { id: 3, name: "Vimonen", total: 7, completed: 0 },
-  ])
-
-  const [foundMarkers, setFoundMarkers] = useState([]);
-  const [remainingMarkers, setRemainingMarkers] = useState([]);
-
-  useFocusEffect(
-    useCallback(() => {
-      const loadMarkers = async () => {
-        try {
-          const found = await AsyncStorage.getItem('finishedMarkers');
-          const remaining = await AsyncStorage.getItem('remainingMarkers');
-  
-          setFoundMarkers(found ? JSON.parse(found) : []);
-          setRemainingMarkers(remaining ? JSON.parse(remaining) : []);
-        } catch (error) {
-          console.error('Failed to load markers:', error);
-        }
-      };
-  
-      loadMarkers();
-    }, [])
-  );
-
-
-
   return (
     <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.infoText}>Suoritetut reitit</Text>
-        <Text style={styles.infoText}>Löydetty: {foundMarkers.length}</Text>
-        <Text style={styles.infoText}>Ei löydetty: {remainingMarkers.length}</Text>
-        {/*         {routes.map((item, index) => (
-          <React.Fragment key={item.id || index}>
-            <Text style={styles.infoText}>{item.name}</Text>
-            <Text style={styles.infoText}>{item.completed}/{item.total} Löydetty</Text>
-          </React.Fragment>
-        ))} */}
-      </View>
     </View>
   );
-
 }
-
-/*        {markers.map((item, index) => (
-
-          <Marker
-            key={item.id}
-            title={"Marker " + index}
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude
-            }} */
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    backgroundColor: Colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:"#006A66"
   },
-  contentContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: "50%",
-    backgroundColor: Colors.onPrimaryFixed,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    alignItems: "center",
-  },
-  infoText: {
-    fontSize: 18,
-    textAlign: 'left',
-    marginVertical: 10,
-    color: "white"
-  }
 });
