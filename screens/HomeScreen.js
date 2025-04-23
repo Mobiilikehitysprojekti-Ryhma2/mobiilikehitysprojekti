@@ -61,8 +61,17 @@ export default function HomeScreen({ navigation }) {
 
 
   const fetchWalkedRoute = async () => {
-    const route = await loadWalkedRoute();
-    setPolylineCoordinates(route);
+
+  const route = await loadWalkedRoute();
+  //console.log(route)
+  const today = new Date().toISOString().split('T')[0];
+  const todayRoute = route.filter(point => {
+  const pointDate = new Date(point.timestamp).toISOString().split('T')[0];
+  return pointDate === today;
+  });
+//console.log(todayRoute)
+  setPolylineCoordinates(todayRoute);
+
   }
 
 
@@ -152,13 +161,14 @@ export default function HomeScreen({ navigation }) {
     console.log("new markers set:", finishedMarkers, markers)
   }
 
-
+/* //ei tarvita enää
   const handleLongPress = (e) => {
     const coordinate = e.nativeEvent.coordinate;
     const id = uuid.v4()
     setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
     ]);
   };
+*/
 
   const onReset = () => {
     setMarkers([]);
@@ -243,7 +253,6 @@ export default function HomeScreen({ navigation }) {
         showsBuildings={true}
         pitchEnabled={false}
         showsMyLocationButton={true}
-        onLongPress={handleLongPress}
         zoomEnabled={true}
         zoomControlEnabled={false}
         scrollEnabled={true}
