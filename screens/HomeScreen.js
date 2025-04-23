@@ -61,6 +61,7 @@ export default function HomeScreen({ navigation }) {
 
 
   const fetchWalkedRoute = async () => {
+
   const route = await loadWalkedRoute();
   //console.log(route)
   const today = new Date().toISOString().split('T')[0];
@@ -70,6 +71,7 @@ export default function HomeScreen({ navigation }) {
   });
 //console.log(todayRoute)
   setPolylineCoordinates(todayRoute);
+
   }
 
 
