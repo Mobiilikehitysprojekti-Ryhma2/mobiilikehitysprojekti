@@ -3,7 +3,8 @@ import { React, useEffect, useState } from 'react'
 import { Appbar } from "react-native-paper";
 import { getDistance } from "geolib";
 
-export default function TopAppBar({ markers, setMarkers, setModalVisible, location, finishedMarkers, setFinishedMarkers }) {
+
+export default function TopAppBar({ markers, setMarkers, setModalVisible, location, finishedMarkers, setFinishedMarkers, setShowPolyline  }) {
 
     const [distance, setDistance] = useState(0);
 
@@ -24,6 +25,10 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
     const logMarkers = () => {
         console.log(markers)
         console.log(finishedMarkers)
+    }
+
+    const togglePolyline = () => {
+        setShowPolyline(prevState => !prevState)
     }
 
     const toggleModal = () => {
@@ -67,6 +72,7 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
         <Appbar.Header>
             <Appbar.Action icon={"map-marker-remove-outline"} onPress={removeAllMarkers} />
             <Appbar.Action icon={"cog"} onPress={toggleModal} />
+            <Appbar.Action icon={"vector-line"} onPress={togglePolyline} />
 
             {/*
             Buttons for marker testing

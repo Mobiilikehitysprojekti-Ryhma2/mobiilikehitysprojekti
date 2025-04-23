@@ -16,8 +16,7 @@ import { useAvatar } from '../helpers/useAvatar';
 import Weatherinfo from "../components/weatherInfo";
 
 export default function HomeScreen({ navigation }) {
-  const [search, setSearch] = useState(""); //poistoon?
-  const [camera, setCamera] = useState('') //poistoon?
+
   const [markers, setMarkers] = useState([]);
   const [finishedMarkers, setFinishedMarkers] = useState([])
   //const origin = {latitude: 65.03439, longitude: 25.2803};
@@ -28,15 +27,18 @@ export default function HomeScreen({ navigation }) {
   const [polylineCoordinates, setPolylineCoordinates] = useState([]);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
-  const PROXIMITY_THRESHOLD = 50; //metriä 
+  const PROXIMITY_THRESHOLD = 30; //metriä 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showAppOptions, setShowAppOptions] = useState(false);
   const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
   const [mapType, setMapType] = useState("hybrid");
 
+  const [showPolyline, setShowPolyline] = useState(true)
 
-const avatarUri = useAvatar();
+
+
+  const avatarUri = useAvatar();
 
   const [location, setLocation] = useState({
     latitude: 65.0100,
@@ -59,22 +61,29 @@ const avatarUri = useAvatar();
 
 
   const fetchWalkedRoute = async () => {
-    const route = await loadWalkedRoute();
-    setPolylineCoordinates(route);
-  } 
+  const route = await loadWalkedRoute();
+  //console.log(route)
+  const today = new Date().toISOString().split('T')[0];
+  const todayRoute = route.filter(point => {
+  const pointDate = new Date(point.timestamp).toISOString().split('T')[0];
+  return pointDate === today;
+  });
+//console.log(todayRoute)
+  setPolylineCoordinates(todayRoute);
+  }
 
 
 
   useEffect(() => {
     let subscription;
-  
+
     const locationCheck = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission denied');
         return;
       }
-  
+
       subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
@@ -83,20 +92,20 @@ const avatarUri = useAvatar();
         async (newLocation) => {
           setLocation(newLocation.coords);
           await saveLocationToAsyncStorage(newLocation);
-  
+
           markersRef.current.forEach((marker) => {
             const distance = getDistance(
               { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
               { latitude: marker.latitude, longitude: marker.longitude }
             );
-  
+
             if (distance < PROXIMITY_THRESHOLD) {
               handleFoundMarker(marker);
               setSelectedMarker(marker);
               setIsModalVisible(true);
             }
           });
-  
+
           if (mapRef.current) {
             mapRef.current.animateCamera(
               {
@@ -114,16 +123,16 @@ const avatarUri = useAvatar();
         }
       );
     };
-  
+
     locationCheck();
-  
+
     return () => {
       if (subscription) {
         subscription.remove();
       }
     };
   }, []);
- 
+
 
 
   const saveLocationToAsyncStorage = async (newLocation) => {
@@ -145,18 +154,19 @@ const avatarUri = useAvatar();
 
   const handleFoundMarker = (foundMarker) => {
     console.log("handleFoundMarker", foundMarker)
-    setFinishedMarkers([...finishedMarkers, { id: foundMarker.id, latitude: foundMarker.latitude, longitude: foundMarker.longitude }])
+    setFinishedMarkers(prevFinished => [...prevFinished, { id: foundMarker.id, latitude: foundMarker.latitude, longitude: foundMarker.longitude }])
     setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== foundMarker.id));
     console.log("new markers set:", finishedMarkers, markers)
   }
 
-
+/* //ei tarvita enää
   const handleLongPress = (e) => {
     const coordinate = e.nativeEvent.coordinate;
     const id = uuid.v4()
     setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
     ]);
   };
+*/
 
   const onReset = () => {
     setMarkers([]);
@@ -220,6 +230,7 @@ const avatarUri = useAvatar();
         location={location}
         finishedMarkers={finishedMarkers}
         setFinishedMarkers={setFinishedMarkers}
+        setShowPolyline={setShowPolyline}
       />
       <MapView
         style={{ flex: 1 }}
@@ -240,7 +251,6 @@ const avatarUri = useAvatar();
         showsBuildings={true}
         pitchEnabled={false}
         showsMyLocationButton={true}
-        onLongPress={handleLongPress}
         zoomEnabled={true}
         zoomControlEnabled={false}
         scrollEnabled={true}
@@ -254,12 +264,12 @@ const avatarUri = useAvatar();
           title="Oma sijainti"
         >
           {avatarUri ? (
-        <Image source={{ uri: avatarUri }} style={{ height: 40, width: 40 }} />
-      ) : (
-        <Text>No avatar selected</Text>
-      )}
+            <Image source={{ uri: avatarUri }} style={{ height: 40, width: 40, borderRadius: 20, borderWidth: 2 }} />
+          ) : (
+            <Text>No avatar selected</Text>
+          )}
 
-          
+
 
         </Marker>
         {markers.map((item, index) => (
@@ -290,7 +300,7 @@ const avatarUri = useAvatar();
         ))}
 
 
-        {polylineCoordinates.length > 0 && (
+        {polylineCoordinates.length > 0 && showPolyline && (
           <Polyline
             coordinates={polylineCoordinates}
             strokeColor="red"
@@ -298,7 +308,7 @@ const avatarUri = useAvatar();
           />
         )}
 
-       
+
 
       </MapView>
       <View style={{
@@ -310,7 +320,7 @@ const avatarUri = useAvatar();
         borderRadius: 8,
         zIndex: 10,
       }}>
-       
+
         {location && <Weatherinfo location={location} />}
       </View>
       <Modal
@@ -329,9 +339,9 @@ const avatarUri = useAvatar();
               </>
             )}
           </View>
-          
+
         </View>
-        
+
       </Modal>
       <Button
         title="Reittivalikko"
