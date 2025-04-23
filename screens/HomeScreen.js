@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAvatar } from '../helpers/useAvatar';
 import Weatherinfo from "../components/weatherInfo";
 
+
 export default function HomeScreen({ navigation }) {
 
 
@@ -27,7 +28,6 @@ export default function HomeScreen({ navigation }) {
   const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
   const [polylineCoordinates, setPolylineCoordinates] = useState([]);
   const mapRef = useRef(null);
-  const markersRef = useRef([]);
   const PROXIMITY_THRESHOLD = 30; //metriä 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -57,7 +57,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     fetchWalkedRoute();
-    markersRef.current = markers;
+    saveMarkersToStorage(markers,finishedMarkers)
   }, [markers]);
 
 
@@ -84,28 +84,45 @@ export default function HomeScreen({ navigation }) {
           timeInterval: 1000,
         },
         async (newLocation) => {
-          setLocation(newLocation.coords);
+          const coords = newLocation.coords;
+          setLocation(coords);
           await saveLocationToAsyncStorage(newLocation);
-
-          markersRef.current.forEach((marker) => {
-            const distance = getDistance(
-              { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
-              { latitude: marker.latitude, longitude: marker.longitude }
-            );
-
-            if (distance < PROXIMITY_THRESHOLD) {
-              handleFoundMarker(marker);
-              setSelectedMarker(marker);
+      
+          setMarkers((currentMarkers) => {
+            const newMarkers = [];
+            let foundMarker = null;
+      
+            currentMarkers.forEach((marker) => {
+              const distance = getDistance(
+                { latitude: coords.latitude, longitude: coords.longitude },
+                { latitude: marker.latitude, longitude: marker.longitude }
+              );
+      
+              if (distance < PROXIMITY_THRESHOLD && !foundMarker) {
+                foundMarker = marker;
+              } else {
+                newMarkers.push(marker);
+              }
+            });
+      
+            if (foundMarker) {
+              setFinishedMarkers((prevFinished) => [
+                ...prevFinished,
+                { id: foundMarker.id, latitude: foundMarker.latitude, longitude: foundMarker.longitude }
+              ]);
+              setSelectedMarker(foundMarker);
               setIsModalVisible(true);
             }
+      
+            return newMarkers;
           });
-
+      
           if (mapRef.current) {
             mapRef.current.animateCamera(
               {
                 center: {
-                  latitude: newLocation.coords.latitude,
-                  longitude: newLocation.coords.longitude,
+                  latitude: coords.latitude,
+                  longitude: coords.longitude,
                 },
                 pitch: 90,
                 heading: 0,
@@ -116,6 +133,7 @@ export default function HomeScreen({ navigation }) {
           }
         }
       );
+      
     };
 
     locationCheck();
@@ -150,6 +168,16 @@ export default function HomeScreen({ navigation }) {
       await AsyncStorage.setItem('walkedRoute', JSON.stringify(locations));
     } catch (error) {
       console.error('Error catch', error);
+    }
+  };
+
+  const saveMarkersToStorage = async (finishedMarkers, markers) => {
+    try {
+      await AsyncStorage.setItem('finishedMarkers', JSON.stringify(finishedMarkers));
+      await AsyncStorage.setItem('remainingMarkers', JSON.stringify(markers));
+      console.log('Markers saved');
+    } catch (error) {
+      console.error('Failed to save markers:', error);
     }
   };
 

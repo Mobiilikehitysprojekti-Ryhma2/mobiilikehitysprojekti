@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../theme/colors";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AchievementsScreen() {
 
@@ -10,19 +12,45 @@ export default function AchievementsScreen() {
     { id: 3, name: "Vimonen", total: 7, completed: 0 },
   ])
 
+  const [foundMarkers, setFoundMarkers] = useState([]);
+  const [remainingMarkers, setRemainingMarkers] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadMarkers = async () => {
+        try {
+          const found = await AsyncStorage.getItem('finishedMarkers');
+          const remaining = await AsyncStorage.getItem('remainingMarkers');
+  
+          setFoundMarkers(found ? JSON.parse(found) : []);
+          setRemainingMarkers(remaining ? JSON.parse(remaining) : []);
+        } catch (error) {
+          console.error('Failed to load markers:', error);
+        }
+      };
+  
+      loadMarkers();
+    }, [])
+  );
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.infoText}>Suoritetut reitit</Text>
-        {routes.map((item, index) => (
-          <>
+        <Text style={styles.infoText}>Löydetty: {foundMarkers.length}</Text>
+        <Text style={styles.infoText}>Ei löydetty: {remainingMarkers.length}</Text>
+        {/*         {routes.map((item, index) => (
+          <React.Fragment key={item.id || index}>
             <Text style={styles.infoText}>{item.name}</Text>
             <Text style={styles.infoText}>{item.completed}/{item.total} Löydetty</Text>
-          </>
-        ))}
+          </React.Fragment>
+        ))} */}
       </View>
     </View>
   );
+
 }
 
 /*        {markers.map((item, index) => (
