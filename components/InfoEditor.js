@@ -26,7 +26,7 @@ export default function InfoEditor(props) {
   return (
 
     isEditing ? (
-      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16}}>
+      <View style={styles.container}>
         <TextInput
           placeholder={props.info}
           value={newInfo}
@@ -54,6 +54,11 @@ export default function InfoEditor(props) {
 
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16
+  },
   userInfo: {
     fontSize: 18,
     textAlign: 'center',
