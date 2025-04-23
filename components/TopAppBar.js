@@ -4,7 +4,15 @@ import { Appbar } from "react-native-paper";
 import { getDistance } from "geolib";
 
 
-export default function TopAppBar({ markers, setMarkers, setModalVisible, location, finishedMarkers, setFinishedMarkers, setShowPolyline  }) {
+export default function TopAppBar({ 
+    markers, 
+    setMarkers, 
+    setModalVisible, 
+    location, 
+    finishedMarkers, 
+    setFinishedMarkers, 
+    setShowPolyline, 
+    clearLocationAsyncStorage  }) {
 
     const [distance, setDistance] = useState(0);
 
@@ -68,6 +76,10 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
         }
     };
 
+    const clearWalkedRoute = () => {
+        clearLocationAsyncStorage()
+    }
+
     return (
         <Appbar.Header>
             <Appbar.Action icon={"map-marker-remove-outline"} onPress={removeAllMarkers} />
@@ -76,9 +88,12 @@ export default function TopAppBar({ markers, setMarkers, setModalVisible, locati
 
             {/*
             Buttons for marker testing
-            <Appbar.Action icon={"map-marker"} onPress={logMarkers} />    
             <Appbar.Action icon={"map"} onPress={removeFoundAllMarkers} />
-             */}
+            <Appbar.Action icon={"map-marker"} onPress={logMarkers} />    
+                         */}
+
+            <Appbar.Action icon={"delete"} onPress={clearWalkedRoute} />
+
              
             <Text style={styles.distanceMeter}>{distance.toFixed(2)} km</Text>
         </Appbar.Header>

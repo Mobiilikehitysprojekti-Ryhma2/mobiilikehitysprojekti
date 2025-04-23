@@ -17,6 +17,7 @@ import Weatherinfo from "../components/weatherInfo";
 
 export default function HomeScreen({ navigation }) {
 
+
   const [markers, setMarkers] = useState([]);
   const [finishedMarkers, setFinishedMarkers] = useState([])
   //const origin = {latitude: 65.03439, longitude: 25.2803};
@@ -126,7 +127,14 @@ export default function HomeScreen({ navigation }) {
     };
   }, []);
 
-
+  const clearLocationAsyncStorage = async () => {
+    try {
+      console.log("clear location")
+      await AsyncStorage.removeItem('walkedRoute')
+    } catch (error) {
+      console.error('Error catch', error)
+    }
+  }
 
   const saveLocationToAsyncStorage = async (newLocation) => {
     try {
@@ -223,6 +231,7 @@ export default function HomeScreen({ navigation }) {
         finishedMarkers={finishedMarkers}
         setFinishedMarkers={setFinishedMarkers}
         setShowPolyline={setShowPolyline}
+        clearLocationAsyncStorage={clearLocationAsyncStorage}
       />
       <MapView
         style={{ flex: 1 }}
@@ -345,9 +354,9 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Button title="Reset" onPress={onReset} color="#4A6361"/>
-            <Button title="Reitti" onPress={openRoutefinderModal} color="#4A6361"/>
-            <Button title="Demo esitystä varten" onPress={Matkatesti} color="red"/>
+            <Button title="Reset" onPress={onReset} color="#4A6361" />
+            <Button title="Reitti" onPress={openRoutefinderModal} color="#4A6361" />
+            <Button title="Demo esitystä varten" onPress={Matkatesti} color="red" />
 
           </View>
         </View>
@@ -384,8 +393,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   modalContainer: {
-backgroundColor: '#006A66',
-alignItems: 'center',
+    backgroundColor: '#006A66',
+    alignItems: 'center',
   },
   modalContent: {
     backgroundColor: '#006A66',

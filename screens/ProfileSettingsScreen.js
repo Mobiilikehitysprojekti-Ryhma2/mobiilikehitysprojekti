@@ -20,8 +20,8 @@ export default function ProfileSettingsScreen({ navigation }) {
 
 
     return (
+        <View backgroundColor={Colors.background}>
         <View style={styles.container}>
-
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="chevron-back-outline" size={42} />
@@ -66,6 +66,7 @@ export default function ProfileSettingsScreen({ navigation }) {
             />
 
         </View>
+        </View>
     )
 }
 
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
         paddingTop: 32,
         paddingBottom: 16,
         height: "100%",
-        backgroundColor: Colors.background,
+        backgroundColor: "white",
     },
     userInfoText: {
         fontSize: 18,
