@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image, Button, Modal, StatusBar } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, Button, Modal, StatusBar, Animated, Easing } from "react-native";
 import { useEffect, useRef } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView, { Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Marker, Polyline } from 'react-native-maps';
-import { FAB } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 import RoutefinderModal from "../components/RoutefinderModal";
 import { getDistance } from 'geolib';
 import uuid from "react-native-uuid"
@@ -14,6 +14,8 @@ import MapSettingsModal from "../components/MapSettingsModal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAvatar } from '../helpers/useAvatar';
 import Weatherinfo from "../components/weatherInfo";
+import ConfettiCannon from 'react-native-confetti-cannon'
+
 
 
 export default function HomeScreen({ navigation }) {
@@ -31,6 +33,8 @@ export default function HomeScreen({ navigation }) {
   const PROXIMITY_THRESHOLD = 30; //metriä 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showSnackbar, setShowSnackbar] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false);
   const [showAppOptions, setShowAppOptions] = useState(false);
   const [mapSettingsModalVisible, setMapSettingsModalVisible] = useState(false)
   const [mapType, setMapType] = useState("hybrid");
@@ -57,24 +61,42 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     fetchWalkedRoute();
-    saveMarkersToStorage(markers,finishedMarkers)
+    saveMarkersToStorage(markers, finishedMarkers)
   }, [markers]);
 
 
   const fetchWalkedRoute = async () => {
 
-  const route = await loadWalkedRoute();
-  //console.log(route)
-  const today = new Date().toISOString().split('T')[0];
-  const todayRoute = route.filter(point => {
-  const pointDate = new Date(point.timestamp).toISOString().split('T')[0];
-  return pointDate === today;
-  });
-//console.log(todayRoute)
-  setPolylineCoordinates(todayRoute);
+    const route = await loadWalkedRoute();
+    //console.log(route)
+    const today = new Date().toISOString().split('T')[0];
+    const todayRoute = route.filter(point => {
+      const pointDate = new Date(point.timestamp).toISOString().split('T')[0];
+      return pointDate === today;
+    });
+    //console.log(todayRoute)
+    setPolylineCoordinates(todayRoute);
 
   }
 
+  useEffect(() => {
+    if (finishedMarkers.length > 0) {
+      Animated.timing(animatedColor, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start();
+
+      setShowSnackbar(true)
+      setShowConfetti(true)
+
+      setTimeout(() => {
+        setShowConfetti(false)
+        setShowSnackbar(false)
+      }, 10000);
+    }
+  }, [finishedMarkers]);
 
 
   useEffect(() => {
@@ -96,24 +118,24 @@ export default function HomeScreen({ navigation }) {
           const coords = newLocation.coords;
           setLocation(coords);
           await saveLocationToAsyncStorage(newLocation);
-      
+
           setMarkers((currentMarkers) => {
             const newMarkers = [];
             let foundMarker = null;
-      
+
             currentMarkers.forEach((marker) => {
               const distance = getDistance(
                 { latitude: coords.latitude, longitude: coords.longitude },
                 { latitude: marker.latitude, longitude: marker.longitude }
               );
-      
+
               if (distance < PROXIMITY_THRESHOLD && !foundMarker) {
                 foundMarker = marker;
               } else {
                 newMarkers.push(marker);
               }
             });
-      
+
             if (foundMarker) {
               setFinishedMarkers((prevFinished) => [
                 ...prevFinished,
@@ -122,10 +144,10 @@ export default function HomeScreen({ navigation }) {
               setSelectedMarker(foundMarker);
               setIsModalVisible(true);
             }
-      
+
             return newMarkers;
           });
-      
+
           if (mapRef.current) {
             mapRef.current.animateCamera(
               {
@@ -134,15 +156,14 @@ export default function HomeScreen({ navigation }) {
                   longitude: coords.longitude,
                 },
                 pitch: 90,
-                heading: 0,
-                zoom: 50,
+                zoom: 17,
               },
               zoomRange
             );
           }
         }
       );
-      
+
     };
 
     locationCheck();
@@ -190,21 +211,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  const handleFoundMarker = (foundMarker) => {
-    console.log("handleFoundMarker", foundMarker)
-    setFinishedMarkers(prevFinished => [...prevFinished, { id: foundMarker.id, latitude: foundMarker.latitude, longitude: foundMarker.longitude }])
-    setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== foundMarker.id));
-    console.log("new markers set:", finishedMarkers, markers)
-  }
 
-/* //ei tarvita enää
-  const handleLongPress = (e) => {
-    const coordinate = e.nativeEvent.coordinate;
-    const id = uuid.v4()
-    setMarkers([...markers, { id: id, latitude: coordinate.latitude, longitude: coordinate.longitude }
-    ]);
-  };
-*/
 
   const onReset = () => {
     setMarkers([]);
@@ -243,8 +250,6 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-
-
   const Matkatesti = () => {
 
     setPolylineCoordinates([
@@ -281,8 +286,7 @@ export default function HomeScreen({ navigation }) {
             longitude: location.longitude,
           },
           pitch: 90,
-          heading: 0,
-          zoom: 15,
+          zoom: 17,
         }}
         showsUserLocation={true}
         followUserLocation={true}
@@ -312,30 +316,31 @@ export default function HomeScreen({ navigation }) {
 
         </Marker>
         {markers.map((item, index) => (
-
-          <Marker
-            key={item.id}
-            title={"Marker " + index}
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude
-            }}
-          />
-
-
+          <React.Fragment key={item.id || index}>
+            <Marker
+              key={item.id}
+              title={"Marker " + index}
+              coordinate={{
+                latitude: item.latitude,
+                longitude: item.longitude
+              }}
+            />
+          </React.Fragment>
         ))}
 
         {/* Finished markers */}
         {finishedMarkers.map((item, index) => (
-          <Marker
-            key={item.id}
-            title={"Marker " + index}
-            pinColor="#7cfc00"
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude
-            }}
-          />
+          <React.Fragment key={item.id || index}>
+            <Marker
+              key={item.id}
+              title={"Marker " + index}
+              pinColor="#7cfc00"
+              coordinate={{
+                latitude: item.latitude,
+                longitude: item.longitude
+              }}
+            />
+          </React.Fragment>
         ))}
 
 
@@ -362,26 +367,37 @@ export default function HomeScreen({ navigation }) {
 
         {location && <Weatherinfo location={location} />}
       </View>
-      <Modal
+      <Snackbar
         visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleModalClose}
+        onDismiss={handleModalClose}
+        duration={7000}
+        style={{ backgroundColor: '#555555', position: "absolute", bottom: 80 }}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' }}>
-            {selectedMarker && (
-              <>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{`Marker ${selectedMarker.key}`}</Text>
-                <Text>{`Latitude: ${selectedMarker.latitude}, Longitude: ${selectedMarker.longitude}`}</Text>
-                <Button title="Close" onPress={handleModalClose} />
-              </>
-            )}
-          </View>
+        {`Markkeri löydetty: Lat ${selectedMarker?.latitude.toFixed(4)}, Lon ${selectedMarker?.longitude.toFixed(4)}`}
+      </Snackbar>
 
-        </View>
 
-      </Modal>
+      <Snackbar
+        visible={showSnackbar}
+        onDismiss={() => setShowSnackbar(false)}
+        duration={10000}
+        style={{ backgroundColor: '#6A0DAD', position: "absolute", bottom: 180, alignItems: "center" }}
+      >
+        <Text style={{ textAlign: 'center', width: '100%', color: 'white' }}>
+          🎉 Reitti suoritettu! 🎉
+        </Text>
+      </Snackbar>
+
+      {showConfetti && (
+        <ConfettiCannon
+          count={200}
+          origin={{ x: -10, y: 0 }}
+          fadeOut={true}
+          explosionSpeed={350}
+          fallSpeed={2500}
+        />
+      )}
+
       <Button
         title="Reittivalikko"
         onPress={() => setIsAppOptionsModalVisible(!isAppOptionsModalVisible)}
