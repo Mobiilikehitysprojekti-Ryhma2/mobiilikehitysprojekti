@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import SettingButton from "../components/SettingButton";
 import { Colors } from "../theme/colors";
 
@@ -50,6 +50,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 40,
     color: Colors.onPrimaryContainer,
-    fontFamily: "Exo_400Regular",
+    fontFamily: "Exo_600SemiBold",
   },
 });
