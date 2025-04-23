@@ -80,13 +80,7 @@ export default function HomeScreen({ navigation }) {
   }
 
   useEffect(() => {
-    if (finishedMarkers.length > 0) {
-      Animated.timing(animatedColor, {
-        toValue: 1,
-        duration: 2000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }).start();
+    if (finishedMarkers.length > 0 && markers.length < 1) {
 
       setShowSnackbar(true)
       setShowConfetti(true)
