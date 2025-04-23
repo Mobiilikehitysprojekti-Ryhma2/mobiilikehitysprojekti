@@ -12,7 +12,7 @@ const WelcomeScreen = ({ navigation }) => {
         resizeMode="cover"
       />
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Tervetuloa Appiin</Text>
+        <Text style={styles.title}>Tervetuloa Mappiloon</Text>
 
         <Button
           onPress={() => navigation.navigate("Login")}
