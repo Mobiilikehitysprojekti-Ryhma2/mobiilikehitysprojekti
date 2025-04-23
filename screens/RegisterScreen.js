@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     color: "white",
     width: "70%",
     textAlign: "center",
-    fontFamily: "Exo_400Regular",
+    fontFamily: "Exo_600SemiBold",
   },
   inputContainer: {
     flexDirection: "row",
