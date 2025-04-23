@@ -21,7 +21,7 @@ useEffect(() => {
       console.error('Error loading route:', err);
     }
   };
-
+ console.log()
   loadWalkedRoute();
 }, []);
 
