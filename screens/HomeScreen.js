@@ -29,6 +29,7 @@ export default function HomeScreen({ navigation }) {
   const [isAppOptionsModalVisible, setIsAppOptionsModalVisible] = useState(false);
   const [isRoutefinderModalVisible, setIsRoutefinderModalVisible] = useState(false);
   const [polylineCoordinates, setPolylineCoordinates] = useState([]);
+  const [totalDistance, setTotalDistance] = useState([]);
   const mapRef = useRef(null);
   const PROXIMITY_THRESHOLD = 30; //metriä 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -106,7 +107,8 @@ export default function HomeScreen({ navigation }) {
       subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
-          timeInterval: 1000,
+          timeInterval: 500,
+          distanceInterval: 1,
         },
         async (newLocation) => {
           const coords = newLocation.coords;
@@ -351,9 +353,9 @@ export default function HomeScreen({ navigation }) {
       </MapView>
       <View style={{
         position: 'absolute',
-        top: 120,
-        left: 0,
-        backgroundColor: 'transparent',
+        top: 130,
+        left: 6,
+        backgroundColor: '#222222',
         padding: 8,
         borderRadius: 8,
         zIndex: 10,
